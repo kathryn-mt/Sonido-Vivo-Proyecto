@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "codigo": "GA001",
+    "nombre": "Guitarra Acústica Folk Yamaha F310",
+    "marca": "Yamaha",
+    "modelo": "F310",
+    "categoria": "Guitarras Acústicas",
+    "precio": 129990,
+    "stock": 8,
+    "descripcion": "Tapa de abeto, aros y fondo de meranti. Ideal para iniciantes.",
+    "imagen": "/assets/yamaha-f310.jpg"
+  },
+  {
+    "id": 2,
+    "codigo": "GE001",
+    "nombre": "Guitarra Eléctrica Stratocaster Squier",
+    "marca": "Squier",
+    "modelo": "Affinity Strat",
+    "categoria": "Guitarras Eléctricas",
+    "precio": 249990,
+    "stock": 5,
+    "descripcion": "Cuerpo de álamo, mástil de arce, pastillas SSS.",
+    "imagen": "/assets/squier-strat.jpg"
+  },
+  {
+    "id": 3,
+    "codigo": "BT001",
+    "nombre": "Batería Acústica 5 piezas Pearl Roadshow",
+    "marca": "Pearl",
+    "modelo": "Roadshow",
+    "categoria": "Baterías",
+    "precio": 599990,
+    "stock": 2,
+    "descripcion": "Incluye stands, platillos y pedal de bombo.",
+    "imagen": "/assets/bateria-pearl-roadshow.jpg"
+  },
+  {
+    "id": 4,
+    "codigo": "TC001",
+    "nombre": "Teclado Digital 61 teclas Yamaha PSR-E373",
+    "marca": "Yamaha",
+    "modelo": "PSR-E373",
+    "categoria": "Teclados y Pianos",
+    "precio": 249990,
+    "stock": 4,
+    "descripcion": "61 teclas sensibles al tacto, 622 voces.",
+    "imagen": "/assets/teclado-yamaha.jpg"
+  },
+  {
+    "id": 5,
+    "codigo": "MI001",
+    "nombre": "Micrófono Dinámico Cardioide Shure SM58",
+    "marca": "Shure",
+    "modelo": "SM58",
+    "categoria": "Micrófonos",
+    "precio": 149990,
+    "stock": 8,
+    "descripcion": "Estándar industria para voz en vivo.",
+    "imagen": "/assets/shure-sm58.jpg"
+  },
+  {
+    "id": 6,
+    "codigo": "AM002",
+    "nombre": "Amplificador Guitarra 40W Marshall MG40GFX",
+    "marca": "Marshall",
+    "modelo": "MG40GFX",
+    "categoria": "Amplificadores",
+    "precio": 299990,
+    "stock": 3,
+    "descripcion": "40W, 4 canales, efectos digitales integrados.",
+    "imagen": "/assets/marshall-mg40.jpg"
+  },
+  {
+    "id": 7,
+    "codigo": "PE001",
+    "nombre": "Pedal Distorsión Boss DS-1",
+    "marca": "Boss",
+    "modelo": "DS-1",
+    "categoria": "Pedales de Efectos",
+    "precio": 79990,
+    "stock": 7,
+    "descripcion": "Clásico pedal de distorsión, 3 controles.",
+    "imagen": "/assets/boss-ds1.jpg"
+  },
+  {
+    "id": 8,
+    "codigo": "AC001",
+    "nombre": "Cuerdas Guitarra Eléctrica Ernie Ball 09-42",
+    "marca": "Ernie Ball",
+    "modelo": "Super Slinky",
+    "categoria": "Accesorios",
+    "precio": 8990,
+    "stock": 25,
+    "descripcion": "Juego 6 cuerdas, calibre ligero.",
+    "imagen": "/assets/cuerdas-ernieball.jpg"
+  },
+  {
+    "id": 9,
+    "codigo": "ES001",
+    "nombre": "Interfaz de Audio Focusrite Scarlett Solo",
+    "marca": "Focusrite",
+    "modelo": "Scarlett Solo",
+    "categoria": "Estudio y Grabación",
+    "precio": 149990,
+    "stock": 4,
+    "descripcion": "1 entrada XLR+instrumento, 2 salidas, 24bit/192kHz.",
+    "imagen": "/assets/focusrite-solo.jpg"
+  },
+  {
+    "id": 10,
+    "codigo": "BA001",
+    "nombre": "Bajo Eléctrico 4 Cuerdas Squier Affinity PJ",
+    "marca": "Squier",
+    "modelo": "Affinity PJ",
+    "categoria": "Bajos Eléctricos",
+    "precio": 299990,
+    "stock": 5,
+    "descripcion": "Pickup PJ, cuerpo álamo, mástil arce.",
+    "imagen": "/assets/bajo-squier.jpg"
+  }
+]
