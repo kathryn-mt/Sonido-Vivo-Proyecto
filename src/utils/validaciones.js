@@ -23,5 +23,5 @@ export const validarLogin = (datos) => {
   const errorPass = validarPassword(datos.password);
   if (errorPass) errores.password = errorPass;
   
-  return errores; // Si está vacío {}, el form es válido
+  return errores; 
 };
