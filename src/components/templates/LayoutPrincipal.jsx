@@ -1,10 +1,21 @@
 import { Container } from "react-bootstrap";
+import Navbar from "../organisms/Navbar";
+import Footer from "../organisms/Footer";
 
 function LayoutPrincipal({ children }) {
   return (
-    <Container fluid className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-      {children}
-    </Container>
+    <div className="d-flex flex-column min-vh-100">
+     
+      <Navbar />
+      
+      <main className="flex-grow-1">
+        <Container>
+          {children}
+        </Container>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
 
