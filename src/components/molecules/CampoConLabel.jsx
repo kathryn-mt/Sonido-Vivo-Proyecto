@@ -15,4 +15,4 @@ function CampoConLabel(props) {
   );
 }
 
-export default CampoConLabel;; 
+export default CampoConLabel; 
