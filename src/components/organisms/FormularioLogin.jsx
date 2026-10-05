@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, Row, Col, Card } from "react-bootstrap";
 import CampoConLabel from "../molecules/CampoConLabel.jsx";
 import Boton from "../atoms/Boton.jsx";
-import { validarLogin } from '../utils/validaciones.js';
+import { validarLogin } from '../../utils/validaciones.js';
 
 function FormularioLogin({ onLogin }) {
   const [datos, setDatos] = useState({ email: '', password: '' });
