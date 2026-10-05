@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import productosData from '../data/productos.json'; 
 import TarjetaProducto from '../components/molecules/TarjetaProducto'; 
+import { useCatalogo } from '../context/CatalogoContext';
 
 function Catalogo() {
-  const [productos, setProductos] = useState([]);
+  const { productos } = useCatalogo();
 
   useEffect(() => {
     setProductos(productosData);

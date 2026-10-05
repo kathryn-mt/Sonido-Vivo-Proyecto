@@ -1,7 +1,7 @@
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const NavbarPrincipal = () => {
+function Navbar() {
   return (
     <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
       <Container>
@@ -24,4 +24,4 @@ const NavbarPrincipal = () => {
   );
 };
 
-export default NavbarPrincipal;
+export default Navbar;

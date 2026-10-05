@@ -1,10 +1,9 @@
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button'; // O usa tu átomo Boton si prefieres
+import Button from 'react-bootstrap/Boton';
 
 const TarjetaProducto = ({ nombre, precio, imagen, descripcion }) => {
   return (
     <Card className="h-100 shadow-sm">
-      {/* La imagen viene por props, así no se rompe si cambia el dato */}
       <Card.Img 
         variant="top" 
         src={imagen || 'https://via.placeholder.com/300x200'} 
@@ -17,8 +16,8 @@ const TarjetaProducto = ({ nombre, precio, imagen, descripcion }) => {
           {descripcion}
         </Card.Text>
         <div className="d-flex justify-content-between align-items-center mt-3">
-          <span className="fw-bold fs-5 text-primary">${precio}</span>
-          <Button variant="outline-primary" size="sm">Ver detalle</Button>
+          <span className="fw-bold fs-5 text-primary">${precio.toLocaleString('es-CL')}</span>
+          <Boton variant="outline-primary" size="sm">Ver detalle</Boton>
         </div>
       </Card.Body>
     </Card>
