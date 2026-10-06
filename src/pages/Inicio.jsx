@@ -9,7 +9,7 @@ function Inicio() {
       <Row className="align-items-center mb-5">
         <Col md={6}>
           <h1 className="display-4 fw-bold text-dark">
-            Tu música comienza aquí 🎵
+            Tu sueño de músico comienza aquí 
           </h1>
           <p className="lead text-muted my-4">
             Descubre los mejores instrumentos musicales en Viña del Mar. 

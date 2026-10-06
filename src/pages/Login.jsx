@@ -1,5 +1,6 @@
 import FormularioLogin from "../components/organisms/FormularioLogin.jsx";
 import LayoutPrincipal from "../components/templates/LayoutPrincipal.jsx";
+import { useCatalogo } from '../context/CatalogoContext';
 
 function Login() {
   const { productos } = useCatalogo();
