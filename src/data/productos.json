@@ -62,13 +62,13 @@
   {
     "id": 6,
     "codigo": "AM002",
-    "nombre": "Amplificador Guitarra 40W Marshall MG40GFX",
+    "nombre": "Amplificador Guitarra 50W Marshall MG50GFX",
     "marca": "Marshall",
-    "modelo": "MG40GFX",
+    "modelo": "MG50GFX",
     "categoria": "Amplificadores",
     "precio": 299990,
     "stock": 3,
-    "descripcion": "40W, 4 canales, efectos digitales integrados.",
+    "descripcion": "50W, 4 canales, efectos digitales integrados.",
     "imagen": "/assets/marshall-mg40.jpg"
   },
   {
