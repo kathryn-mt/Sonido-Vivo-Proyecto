@@ -1,9 +1,11 @@
+
 import { useState } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 
 import CampoConLabel from '../molecules/CampoConLabel';
 import { validarProducto } from '../../utils/validacionesProducto';
 
+// Categorías de Sonido Vivo
 const categorias = [
   'Guitarras Acústicas',
   'Guitarras Eléctricas',
@@ -17,12 +19,18 @@ const categorias = [
   'Estudio y Grabación'
 ];
 
+// Campos del formulario
 const campos = [
   { nombre: 'codigo', etiqueta: 'Código' },
   { nombre: 'nombre', etiqueta: 'Nombre' },
   { nombre: 'marca', etiqueta: 'Marca' },
   { nombre: 'modelo', etiqueta: 'Modelo' },
-  { nombre: 'precio', etiqueta: 'Precio', tipo: 'number' },
+  { nombre: 'precio', etiqueta: 'Precio actual', tipo: 'number' },
+  {
+    nombre: 'precioAnterior',
+    etiqueta: 'Precio anterior (opcional)',
+    tipo: 'number'
+  },
   { nombre: 'stock', etiqueta: 'Stock', tipo: 'number' }
 ];
 
@@ -32,6 +40,8 @@ function FormularioProducto({
   onGuardar,
   onCancelar
 }) {
+
+  // Datos del producto
   const [datos, setDatos] = useState({
     codigo: producto?.codigo ?? '',
     nombre: producto?.nombre ?? '',
@@ -39,6 +49,7 @@ function FormularioProducto({
     modelo: producto?.modelo ?? '',
     categoria: producto?.categoria ?? '',
     precio: producto?.precio ?? '',
+    precioAnterior: producto?.precioAnterior ?? '',
     stock: producto?.stock ?? 0,
     descripcion: producto?.descripcion ?? '',
     imagen: producto?.imagen ?? ''
@@ -47,6 +58,43 @@ function FormularioProducto({
   const [errores, setErrores] = useState({});
   const [intentoEnvio, setIntentoEnvio] = useState(false);
 
+  // Validar campos normales y descuentos
+  function validarFormulario(datosAValidar) {
+
+    const nuevosErrores = validarProducto(
+      datosAValidar,
+      productos,
+      producto?.id
+    );
+
+    const precioActual = Number(datosAValidar.precio);
+    const precioAnterior = datosAValidar.precioAnterior;
+
+    // Solo validar el precio anterior si se ingresó
+    if (precioAnterior !== '') {
+
+      const precioAnteriorNumero = Number(precioAnterior);
+
+      if (
+        !Number.isFinite(precioAnteriorNumero) ||
+        precioAnteriorNumero <= 0
+      ) {
+        nuevosErrores.precioAnterior =
+          'Ingresa un precio anterior válido.';
+
+      } else if (
+        precioActual > 0 &&
+        precioAnteriorNumero <= precioActual
+      ) {
+        nuevosErrores.precioAnterior =
+          'El precio anterior debe ser mayor al precio actual.';
+      }
+    }
+
+    return nuevosErrores;
+  }
+
+  // Actualizar datos mientras el usuario escribe
   function manejarCambio(e) {
     const { name, value } = e.target;
 
@@ -57,31 +105,30 @@ function FormularioProducto({
 
     setDatos(nuevosDatos);
 
-    // Actualizar los errores mientras corrige
+    // Actualizar errores si ya intentó guardar
     if (intentoEnvio) {
       setErrores(
-        validarProducto(nuevosDatos, productos, producto?.id)
+        validarFormulario(nuevosDatos)
       );
     }
   }
 
+  // Guardar producto
   function manejarEnvio(e) {
     e.preventDefault();
+
     setIntentoEnvio(true);
 
-    const nuevosErrores = validarProducto(
-      datos,
-      productos,
-      producto?.id
-    );
+    const nuevosErrores = validarFormulario(datos);
 
     setErrores(nuevosErrores);
 
-    // No guardar si existen errores
+    // No guardar si hay errores
     if (Object.keys(nuevosErrores).length > 0) {
       return;
     }
 
+    // Enviar datos al componente administrador
     onGuardar({
       codigo: datos.codigo.trim().toUpperCase(),
       nombre: datos.nombre.trim(),
@@ -89,6 +136,12 @@ function FormularioProducto({
       modelo: datos.modelo.trim(),
       categoria: datos.categoria,
       precio: Number(datos.precio),
+
+      // Sin precio anterior significa sin oferta
+      precioAnterior: datos.precioAnterior === ''
+        ? null
+        : Number(datos.precioAnterior),
+
       stock: Number(datos.stock),
       descripcion: datos.descripcion.trim(),
       imagen: datos.imagen.trim() || '/assets/logo.jpg'
@@ -98,14 +151,19 @@ function FormularioProducto({
   return (
     <Card className="shadow-sm">
       <Card.Body>
+
         <h2 className="h4 mb-4">
           {producto ? 'Editar producto' : 'Agregar producto'}
         </h2>
 
         <Form noValidate onSubmit={manejarEnvio}>
+
+          {/* Datos principales */}
           <Row>
+
             {campos.map(campo => (
               <Col md={6} key={campo.nombre}>
+
                 <CampoConLabel
                   label={campo.etiqueta}
                   name={campo.nombre}
@@ -114,30 +172,63 @@ function FormularioProducto({
                   onChange={manejarCambio}
                   error={errores[campo.nombre]}
                 />
+
               </Col>
             ))}
+
           </Row>
 
-          <Form.Group className="mb-3" controlId="categoria">
-            <Form.Label>Categoría</Form.Label>
+          {/* Información sobre las ofertas */}
+          <p className="text-muted small mb-4">
+            Si el producto tiene descuento, ingresa el
+            precio original en "Precio anterior" y el
+            precio rebajado en "Precio actual".
+            Si no tiene oferta, deja vacío el precio anterior.
+          </p>
+
+          {/* Categoría */}
+          <Form.Group
+            className="mb-3"
+            controlId="categoria"
+          >
+            <Form.Label>
+              Categoría
+            </Form.Label>
+
             <Form.Select
               name="categoria"
               value={datos.categoria}
               onChange={manejarCambio}
               isInvalid={Boolean(errores.categoria)}
             >
-              <option value="">Seleccionar categoría</option>
+
+              <option value="">
+                Seleccionar categoría
+              </option>
+
               {categorias.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
               ))}
+
             </Form.Select>
+
             <Form.Control.Feedback type="invalid">
               {errores.categoria}
             </Form.Control.Feedback>
+
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="descripcion">
-            <Form.Label>Descripción</Form.Label>
+          {/* Descripción */}
+          <Form.Group
+            className="mb-3"
+            controlId="descripcion"
+          >
+            <Form.Label>
+              Descripción
+            </Form.Label>
+
             <Form.Control
               as="textarea"
               rows={3}
@@ -146,11 +237,14 @@ function FormularioProducto({
               onChange={manejarCambio}
               isInvalid={Boolean(errores.descripcion)}
             />
+
             <Form.Control.Feedback type="invalid">
               {errores.descripcion}
             </Form.Control.Feedback>
+
           </Form.Group>
 
+          {/* Imagen del producto */}
           <CampoConLabel
             label="Ruta de imagen (opcional)"
             name="imagen"
@@ -159,9 +253,16 @@ function FormularioProducto({
             onChange={manejarCambio}
           />
 
-          <div className="d-flex gap-2 flex-wrap">
-            <Button variant="primary" type="submit">
-              {producto ? 'Guardar cambios' : 'Agregar producto'}
+          {/* Botones */}
+          <div className="d-flex gap-2 flex-wrap mt-3">
+
+            <Button
+              variant="primary"
+              type="submit"
+            >
+              {producto
+                ? 'Guardar cambios'
+                : 'Agregar producto'}
             </Button>
 
             <Button
@@ -171,8 +272,11 @@ function FormularioProducto({
             >
               Cancelar
             </Button>
+
           </div>
+
         </Form>
+
       </Card.Body>
     </Card>
   );

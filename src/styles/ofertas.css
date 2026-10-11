@@ -1,0 +1,72 @@
+
+/* SONIDO VIVO - OFERTAS */
+
+.ofertas-pagina h1 {
+  color: var(--color-primario);
+}
+
+.oferta-tarjeta {
+  border: 1px solid var(--color-borde);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.oferta-tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(16, 43, 82, 0.12);
+}
+
+.oferta-imagen-contenedor {
+  position: relative;
+  padding: 1rem;
+  background-color: #ffffff;
+}
+
+.oferta-imagen {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+}
+
+.oferta-descuento {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  z-index: 1;
+}
+
+.oferta-tarjeta .card-title {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.oferta-precio-anterior {
+  color: #6c757d;
+  text-decoration: line-through;
+  font-size: 0.95rem;
+}
+
+.oferta-precio-actual {
+  color: #b42318;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .oferta-imagen {
+    height: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oferta-tarjeta {
+    transition: none;
+  }
+
+  .oferta-tarjeta:hover {
+    transform: none;
+  }
+}
