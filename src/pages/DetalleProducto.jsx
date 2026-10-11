@@ -13,7 +13,11 @@ function DetalleProducto() {
     <Container className="py-5">
       <Link to="/catalogo" className="btn btn-outline-secondary mb-3">← Volver</Link>
       <Card className="shadow-sm">
-        <Card.Img variant="top" src={producto.imagen} style={{ height: '400px', objectFit: 'contain' }} />
+        <Card.Img
+          variant="top"
+          src={producto.imagen}
+          className="imagen-detalle"
+        />
         <Card.Body>
           <Card.Title>{producto.nombre}</Card.Title>
           <Card.Text><strong>Marca:</strong> {producto.marca} | <strong>Modelo:</strong> {producto.modelo}</Card.Text>

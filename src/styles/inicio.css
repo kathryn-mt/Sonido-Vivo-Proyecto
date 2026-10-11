@@ -1,0 +1,349 @@
+
+/* ========================================
+   SONIDO VIVO - ESTILOS DE INICIO
+   ======================================== */
+
+/* Configuración general */
+.inicio {
+  width: 100%;
+}
+
+/* PORTADA PRINCIPAL */
+
+.inicio-hero {
+  min-height: 440px;
+  margin-top: 1.5rem;
+  padding: 3rem 2rem;
+
+  background: linear-gradient(
+    120deg,
+    #edf7fc 0%,
+    #f5fbfe 65%,
+    #fff7e9 100%
+  );
+
+  border-radius: 18px;
+}
+
+/* Texto pequeño sobre el título */
+.inicio-etiqueta {
+  color: var(--color-secundario);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+/* Título principal */
+.inicio-hero h1 {
+  color: var(--color-primario);
+}
+
+/* Contenedor de la fotografía */
+.inicio-hero-contenedor {
+  width: 100%;
+  height: 380px;
+
+  background-color: #102b52;
+  border-radius: 16px;
+  overflow: hidden;
+
+  box-shadow: 0 8px 24px rgba(16, 43, 82, 0.15);
+}
+
+/* Fotografía del guitarrista */
+.inicio-hero-imagen {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+/* Buscador de instrumentos */
+.inicio-buscador {
+  max-width: 520px;
+}
+
+.inicio-buscador .form-control {
+  border: 1px solid #cbdde8;
+  border-radius: 8px;
+}
+
+.inicio-buscador .form-control:focus {
+  border-color: var(--color-secundario);
+
+  box-shadow: 0 0 0 0.2rem rgba(
+    8, 127, 163, 0.15
+  );
+}
+
+/*ENCABEZADOS DE SECCIONES*/
+
+.inicio-encabezado-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.inicio-encabezado-seccion h2 {
+  color: var(--color-primario);
+}
+
+.inicio-encabezado-seccion a {
+  color: var(--color-secundario);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.inicio-encabezado-seccion a:hover {
+  color: var(--color-primario);
+  text-decoration: underline;
+}
+
+/* ========================================
+   3. TARJETAS DE CATEGORÍAS
+   ======================================== */
+
+.inicio-categoria {
+  display: block;
+  height: 100%;
+  padding: 1.5rem;
+
+  text-align: center;
+  text-decoration: none;
+
+  color: var(--color-primario);
+  background-color: #ffffff;
+
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.inicio-categoria:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-secundario);
+
+  box-shadow: 0 8px 20px rgba(
+    8, 127, 163, 0.12
+  );
+
+  color: var(--color-secundario);
+}
+
+.inicio-categoria:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 3px;
+}
+
+.inicio-categoria h3 {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+/* Imágenes de las categorías */
+.inicio-categoria-imagen {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+}
+
+/* PRODUCTOS DESTACADOS */
+
+.inicio .card {
+  height: 100%;
+  background-color: #ffffff;
+
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  overflow: hidden;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inicio .card:hover {
+  transform: translateY(-4px);
+
+  box-shadow: 0 8px 20px rgba(
+    16, 43, 82, 0.12
+  );
+}
+
+.inicio .card-title {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.inicio .card-img-top {
+  background-color: #ffffff;
+  object-fit: contain;
+}
+
+.inicio .card .fw-bold {
+  color: var(--color-primario);
+}
+
+/* SOBRE SONIDO VIVO*/
+
+.inicio-sobre {
+  background-color: var(--color-fondo-suave);
+
+  border-radius: 16px;
+  padding: 3rem 2rem;
+}
+
+.inicio-sobre h2 {
+  color: var(--color-primario);
+}
+
+.inicio-sobre p {
+  color: #495057;
+  line-height: 1.8;
+}
+
+.inicio-sobre-imagen {
+  text-align: center;
+}
+
+.inicio-sobre-imagen img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* INFORMACIÓN DE LA TIENDA */
+
+.inicio-info {
+  height: 100%;
+  padding: 1.5rem;
+
+  background-color: #f8fbfd;
+
+  border: 1px solid var(--color-borde);
+  border-top: 4px solid var(--color-acento);
+  border-radius: 12px;
+}
+
+.inicio-info h3 {
+  color: var(--color-primario);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.inicio-info p {
+  color: #495057;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+/* SECCIÓN FINAL*/
+
+.inicio-cierre {
+  background: linear-gradient(
+    120deg,
+    #102b52 0%,
+    #075f7b 100%
+  );
+
+  color: #ffffff;
+
+  padding: 3.5rem 1.5rem;
+  border-radius: 16px;
+  margin-bottom: 3rem;
+}
+
+.inicio-cierre h2 {
+  color: #ffffff;
+}
+
+.inicio-cierre p {
+  color: #e4f4fa;
+}
+
+.inicio-cierre .btn-light {
+  background-color: #ffffff;
+  color: var(--color-primario);
+  border-color: #ffffff;
+  font-weight: 600;
+}
+
+.inicio-cierre .btn-light:hover {
+  background-color: #edf7fc;
+  color: var(--color-secundario);
+}
+
+/*DISEÑO RESPONSIVE*/
+
+/* Tablets */
+@media (max-width: 991px) {
+
+  .inicio-hero {
+    min-height: auto;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .inicio-hero-contenedor {
+    height: 340px;
+  }
+
+}
+
+/* Celulares */
+@media (max-width: 767px) {
+
+  .inicio-hero {
+    padding: 2rem 1.25rem;
+  }
+
+  .inicio-hero-contenedor {
+    height: 280px;
+  }
+
+  .inicio-hero-imagen {
+    object-position: center 35%;
+  }
+
+  .inicio-encabezado-seccion {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inicio-sobre {
+    padding: 2rem 1.25rem;
+  }
+
+  .inicio-cierre {
+    padding: 2.5rem 1.25rem;
+  }
+
+  .inicio-categoria-imagen {
+    height: 140px;
+  }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .inicio-categoria,
+  .inicio .card {
+    transition: none;
+  }
+
+  .inicio-categoria:hover,
+  .inicio .card:hover {
+    transform: none;
+  }
+
+}

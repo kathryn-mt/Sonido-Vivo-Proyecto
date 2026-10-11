@@ -3,7 +3,7 @@ import Input from "../atoms/Input.jsx";
 
 function CampoConLabel(props) {
   return (
-    <Form.Group className="mb-3">
+    <Form.Group className="mb-3" controlId={props.name}>
       <Form.Label>{props.label}</Form.Label>
       <Input
         name={props.name}

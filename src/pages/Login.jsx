@@ -1,17 +1,29 @@
-import FormularioLogin from "../components/organisms/FormularioLogin.jsx";
-import LayoutPrincipal from "../components/templates/LayoutPrincipal.jsx";
-import { useCatalogo } from '../context/CatalogoContext';
+
+import { useState } from 'react';
+import FormularioLogin from '../components/organisms/FormularioLogin.jsx';
+import LayoutPrincipal from '../components/templates/LayoutPrincipal.jsx';
 
 function Login() {
-  const { productos } = useCatalogo();
+  const [mensaje, setMensaje] = useState('');
 
   function manejarLogin() {
-    alert("Intento de inicio de sesión en Sonido Vivo");
+    setMensaje(
+      'Formulario validado correctamente. La autenticación aún no está implementada.'
+    );
   }
 
   return (
     <LayoutPrincipal>
       <FormularioLogin onLogin={manejarLogin} />
+
+      {mensaje && (
+        <p
+          role="status"
+          className="text-success text-center mt-3"
+        >
+          {mensaje}
+        </p>
+      )}
     </LayoutPrincipal>
   );
 }

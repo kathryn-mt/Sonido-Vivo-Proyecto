@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import DetalleProducto from './pages/DetalleProducto'; 
 import Categorias from './pages/Categorias';
 import Ofertas from './pages/Ofertas';
+import AdminProductos from './pages/AdminProductos';
 
 function App() {
   return (
@@ -26,8 +27,11 @@ function App() {
         <Route path="/ofertas" element={
           <LayoutPrincipal><Ofertas /></LayoutPrincipal>
         } />
-
-        {/* Detalle también lleva Layout para mantener consistencia visual */}
+       
+        <Route path="/admin/productos" element={
+          <LayoutPrincipal><AdminProductos /></LayoutPrincipal>
+        } />        
+        
         <Route path="/detalle/:id" element={
           <LayoutPrincipal><DetalleProducto /></LayoutPrincipal>
         } />

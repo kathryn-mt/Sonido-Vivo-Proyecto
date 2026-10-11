@@ -8,9 +8,8 @@ function TarjetaProducto({ producto }) {
     <div className="card h-100 shadow-sm">
       <img
         src={imagen}
-        className="card-img-top"
+        className="card-img-top imagen-tarjeta-producto"
         alt={nombre}
-        style={{ height: '200px', objectFit: 'cover' }}
       />
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{nombre}</h5>

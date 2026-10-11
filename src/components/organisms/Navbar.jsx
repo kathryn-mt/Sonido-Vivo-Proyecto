@@ -6,12 +6,16 @@ function Navbar() {
     <BsNavbar bg="light" expand="lg" sticky="top" className="shadow-sm">
       <Container>
         <BsNavbar.Brand as={Link} to="/">
-          <strong>Sonido Vivo</strong> 
+          <img
+            src="/assets/logo-sonido-vivo-navbar.png"
+            alt="Sonido Vivo - Instrumentos y Audio"
+            className="logo-navbar"
+          />
         </BsNavbar.Brand>
-        
-        
+
+
         <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
-        
+
         <BsNavbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/">Inicio</Nav.Link>

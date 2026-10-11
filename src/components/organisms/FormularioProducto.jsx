@@ -1,0 +1,181 @@
+import { useState } from 'react';
+import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+
+import CampoConLabel from '../molecules/CampoConLabel';
+import { validarProducto } from '../../utils/validacionesProducto';
+
+const categorias = [
+  'Guitarras Acústicas',
+  'Guitarras Eléctricas',
+  'Bajos Eléctricos',
+  'Baterías',
+  'Teclados y Pianos',
+  'Amplificadores',
+  'Micrófonos',
+  'Pedales de Efectos',
+  'Accesorios',
+  'Estudio y Grabación'
+];
+
+const campos = [
+  { nombre: 'codigo', etiqueta: 'Código' },
+  { nombre: 'nombre', etiqueta: 'Nombre' },
+  { nombre: 'marca', etiqueta: 'Marca' },
+  { nombre: 'modelo', etiqueta: 'Modelo' },
+  { nombre: 'precio', etiqueta: 'Precio', tipo: 'number' },
+  { nombre: 'stock', etiqueta: 'Stock', tipo: 'number' }
+];
+
+function FormularioProducto({
+  producto = null,
+  productos = [],
+  onGuardar,
+  onCancelar
+}) {
+  const [datos, setDatos] = useState({
+    codigo: producto?.codigo ?? '',
+    nombre: producto?.nombre ?? '',
+    marca: producto?.marca ?? '',
+    modelo: producto?.modelo ?? '',
+    categoria: producto?.categoria ?? '',
+    precio: producto?.precio ?? '',
+    stock: producto?.stock ?? 0,
+    descripcion: producto?.descripcion ?? '',
+    imagen: producto?.imagen ?? ''
+  });
+
+  const [errores, setErrores] = useState({});
+  const [intentoEnvio, setIntentoEnvio] = useState(false);
+
+  function manejarCambio(e) {
+    const { name, value } = e.target;
+
+    const nuevosDatos = {
+      ...datos,
+      [name]: value
+    };
+
+    setDatos(nuevosDatos);
+
+    // Actualizar los errores mientras corrige
+    if (intentoEnvio) {
+      setErrores(
+        validarProducto(nuevosDatos, productos, producto?.id)
+      );
+    }
+  }
+
+  function manejarEnvio(e) {
+    e.preventDefault();
+    setIntentoEnvio(true);
+
+    const nuevosErrores = validarProducto(
+      datos,
+      productos,
+      producto?.id
+    );
+
+    setErrores(nuevosErrores);
+
+    // No guardar si existen errores
+    if (Object.keys(nuevosErrores).length > 0) {
+      return;
+    }
+
+    onGuardar({
+      codigo: datos.codigo.trim().toUpperCase(),
+      nombre: datos.nombre.trim(),
+      marca: datos.marca.trim(),
+      modelo: datos.modelo.trim(),
+      categoria: datos.categoria,
+      precio: Number(datos.precio),
+      stock: Number(datos.stock),
+      descripcion: datos.descripcion.trim(),
+      imagen: datos.imagen.trim() || '/assets/logo.jpg'
+    });
+  }
+
+  return (
+    <Card className="shadow-sm">
+      <Card.Body>
+        <h2 className="h4 mb-4">
+          {producto ? 'Editar producto' : 'Agregar producto'}
+        </h2>
+
+        <Form noValidate onSubmit={manejarEnvio}>
+          <Row>
+            {campos.map(campo => (
+              <Col md={6} key={campo.nombre}>
+                <CampoConLabel
+                  label={campo.etiqueta}
+                  name={campo.nombre}
+                  type={campo.tipo || 'text'}
+                  value={datos[campo.nombre]}
+                  onChange={manejarCambio}
+                  error={errores[campo.nombre]}
+                />
+              </Col>
+            ))}
+          </Row>
+
+          <Form.Group className="mb-3" controlId="categoria">
+            <Form.Label>Categoría</Form.Label>
+            <Form.Select
+              name="categoria"
+              value={datos.categoria}
+              onChange={manejarCambio}
+              isInvalid={Boolean(errores.categoria)}
+            >
+              <option value="">Seleccionar categoría</option>
+              {categorias.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </Form.Select>
+            <Form.Control.Feedback type="invalid">
+              {errores.categoria}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="descripcion">
+            <Form.Label>Descripción</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="descripcion"
+              value={datos.descripcion}
+              onChange={manejarCambio}
+              isInvalid={Boolean(errores.descripcion)}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errores.descripcion}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <CampoConLabel
+            label="Ruta de imagen (opcional)"
+            name="imagen"
+            placeholder="/assets/instrumento.jpg"
+            value={datos.imagen}
+            onChange={manejarCambio}
+          />
+
+          <div className="d-flex gap-2 flex-wrap">
+            <Button variant="primary" type="submit">
+              {producto ? 'Guardar cambios' : 'Agregar producto'}
+            </Button>
+
+            <Button
+              variant="outline-secondary"
+              type="button"
+              onClick={onCancelar}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </Form>
+      </Card.Body>
+    </Card>
+  );
+}
+
+export default FormularioProducto;

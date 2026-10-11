@@ -3,6 +3,12 @@
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --color-text: #212529;
   --color-bg: #ffffff;
+  /* Colores de identidad Sonido Vivo */
+  --color-primario: #102b52;
+  --color-secundario: #087fa3;
+  --color-acento: #f59e0b;
+  --color-fondo-suave: #edf7fc;
+  --color-borde: #d7e6ed;
 }
 
 body {
@@ -22,7 +28,12 @@ body {
 }
 
 /* Títulos base (Bootstrap los sobreescribe igual, pero esto es respaldo) */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-weight: 600;
@@ -38,4 +49,189 @@ p {
 img {
   max-width: 100%;
   height: auto;
+}
+
+
+/* Imágenes de productos del catálogo */
+.imagen-tarjeta-producto {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  object-position: center;
+  padding: 12px;
+  background-color: #ffffff;
+}
+
+
+
+/* Imagen principal del inicio */
+.imagen-inicio {
+  width: 100%;
+  height: 340px;
+  object-fit: contain;
+  background-color: #f8f9fa;
+}
+
+/* Sección de categorías */
+.seccion-categorias {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+/* Tarjetas de categorías */
+.tarjeta-categoria {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #212529;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.tarjeta-categoria:hover {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+
+/* Imagen del detalle de producto */
+.imagen-detalle {
+  height: 400px;
+  object-fit: contain;
+}
+
+/* Enlaces de categorías */
+.enlace-categoria {
+  text-decoration: none;
+}
+
+/* ===== PÁGINA DE CATEGORÍAS ===== */
+
+.categorias-pagina {
+  width: 100%;
+}
+
+/* Tarjetas */
+.categoria-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 1.25rem;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  text-align: center;
+  text-decoration: none;
+  color: #212529;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.categoria-tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  color: #212529;
+}
+
+.categoria-tarjeta:focus-visible {
+  outline: 3px solid #0d6efd;
+  outline-offset: 3px;
+}
+
+/* Imágenes */
+.categoria-imagen-contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 170px;
+  margin-bottom: 1rem;
+}
+
+.categoria-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Información */
+.categoria-nombre {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.categoria-cantidad {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 1.25rem;
+}
+
+/* Botón visual dentro del enlace */
+.categoria-boton {
+  display: inline-block;
+  margin-top: auto;
+  padding: 0.6rem 1.25rem;
+  background-color: #0d6efd;
+  color: #ffffff;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.categoria-tarjeta:hover .categoria-boton {
+  background-color: #0a58ca;
+}
+
+/* Logo principal de Sonido Vivo */
+
+.logo-navbar {
+  width: 190px;
+  height: auto;
+  display: block;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 576px) {
+  .logo-navbar {
+    width: 145px;
+  }
+}
+
+/* ===== IDENTIDAD VISUAL SONIDO VIVO ===== */
+
+body {
+  background-color: #ffffff;
+  color: var(--color-primario);
+}
+
+/* Botones principales de Bootstrap */
+.btn-primary {
+  --bs-btn-bg: #102b52;
+  --bs-btn-border-color: #102b52;
+  --bs-btn-hover-bg: #087fa3;
+  --bs-btn-hover-border-color: #087fa3;
+  --bs-btn-active-bg: #075f7b;
+  --bs-btn-active-border-color: #075f7b;
+  --bs-btn-focus-shadow-rgb: 8, 127, 163;
+}
+
+/* Enlaces */
+a {
+  color: var(--color-secundario);
+}
+
+a:hover {
+  color: var(--color-primario);
+}
+
+/* Accesibilidad en navegación */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 3px;
 }
