@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import FormularioLogin from '../components/organisms/FormularioLogin.jsx';
 import LayoutPrincipal from '../components/templates/LayoutPrincipal.jsx';
-import {useTitulopagina} from '../hooks/useTituloPagina';
+import {useTituloPagina} from '../hooks/useTituloPagina';
 function Login() {
   useTituloPagina('Iniciar sesión');
 
