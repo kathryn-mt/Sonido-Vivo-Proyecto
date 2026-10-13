@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { useCatalogo } from '../context/CatalogoContext';
-
+import { useTituloPagina } from '../hooks/useTituloPagina'; 
 // Imágenes representativas de cada categoría
 const imagenesCategorias = {
   'Guitarras Acústicas': '/assets/yamaha-f310.jpg',
@@ -18,7 +18,7 @@ const imagenesCategorias = {
 };
 
 function Categorias() {
-  const { productos } = useCatalogo();
+  useTituloPagina('Categorías');
 
   // Obtener categorías sin repetir
   const categorias = [

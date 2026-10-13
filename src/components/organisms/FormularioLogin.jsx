@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Form } from "react-bootstrap";
 import CampoConLabel from "../molecules/CampoConLabel.jsx";
 import Boton from "../atoms/Boton.jsx";
 import { validarLogin } from '../../utils/validaciones.js';
@@ -14,18 +14,19 @@ function FormularioLogin({ onLogin }) {
       ...datos, 
       [e.target.name]: e.target.value 
     });
+    setErrores({ ...errores, [e.target.name]:''});
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     const erroresValidacion = validarLogin(datos);
+    setErrores(erroresValidacion);
     
     if (Object.keys(erroresValidacion).length === 0) {
 
       onLogin(datos); 
-    } else {
-
-      setErrores(erroresValidacion);
-    }
+    } 
   };
     return (
         <Container className="mt-5">
@@ -34,7 +35,7 @@ function FormularioLogin({ onLogin }) {
                <Card className="p-4 shadow">
                 <h2 className="text-center mb-4">Sonido Vivo</h2>
                 <p className="text-center mb-4">Inicia sesión para continuar</p>
-
+                <Form noValidate onSubmit={handleSubmit}>
                 <CampoConLabel
                   label="Correo electrónico"
                   name="email"   
@@ -59,10 +60,12 @@ function FormularioLogin({ onLogin }) {
                     <Boton
                       texto="Ingresar"
                       variante="primary"
-                      onClick={handleSubmit}
+                      tipo="submit"
                     />
                 </div>
+                </Form>
               </Card>
+              
             </Col>
           </Row>
         </Container>
