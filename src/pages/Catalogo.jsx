@@ -1,9 +1,11 @@
-
+import { useTituloPagina} from '../hooks/useTituloPagina';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useCatalogo } from '../context/CatalogoContext';
 import TarjetaProducto from '../components/molecules/TarjetaProducto';
 
 function Catalogo() {
+  useTituloPagina('Catálogo');
+  
   const { productos } = useCatalogo();
   const [parametros] = useSearchParams();
 

@@ -1,3 +1,4 @@
+import { useTituloPagina } from '../hooks/useTituloPagina';
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Card, Button, Alert } from 'react-bootstrap';
@@ -18,6 +19,9 @@ function DetalleProducto() {
     p => p.id === Number(id)
   );
 
+  useTituloPagina(
+    producto?.nombre ?? 'Producto no encontrado'
+  );
   if (!producto) {
     return (
       <Container className="py-5">

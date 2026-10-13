@@ -1,3 +1,4 @@
+import { useTituloPagina } from '../hooks/useTituloPagina';
 import { useState } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
 
@@ -6,6 +7,7 @@ import FormularioProducto from '../components/organisms/FormularioProducto';
 import TablaProductos from '../components/organisms/TablaProductos';
 
 function AdminProductos() {
+  useTituloPagina('Administración de Productos');
   const {
     productos,
     crearProducto,
@@ -79,6 +81,7 @@ function AdminProductos() {
           {mensaje}
         </p>
       )}
+
 
       <Row className="g-4">
         <Col lg={5}>
