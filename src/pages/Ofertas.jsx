@@ -6,8 +6,10 @@ import { useCatalogo } from '../context/CatalogoContext';
 
 import '../styles/ofertas.css';
 
+import { useTituloPagina } from '../hooks/useTituloPagina';
+
 function Ofertas() {
-  const { productos } = useCatalogo();
+  useTituloPagina('Ofertas');
 
   // Solo mostrar productos con descuento y stock
   const ofertasDestacadas = productos.filter(producto =>

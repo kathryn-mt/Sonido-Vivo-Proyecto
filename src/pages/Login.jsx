@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import FormularioLogin from '../components/organisms/FormularioLogin.jsx';
 import LayoutPrincipal from '../components/templates/LayoutPrincipal.jsx';
-
+import {useTitulopagina} from '../hooks/useTituloPagina';
 function Login() {
-  const [mensaje, setMensaje] = useState('');
+  useTituloPagina('Iniciar sesión');
 
   function manejarLogin() {
     setMensaje(
