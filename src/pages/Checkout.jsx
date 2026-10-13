@@ -1,4 +1,4 @@
-
+import { useTituloPagina } from '../hooks/useTituloPagina';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -15,6 +15,7 @@ import { validarCheckout } from '../utils/validacionesCheckout';
 import { registrarPedido } from '../services/pedidoService';
 
 function Checkout() {
+  useTituloPagina('Checkout');
   const {
     carrito,
     total,
