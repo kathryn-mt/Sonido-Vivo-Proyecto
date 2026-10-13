@@ -1,12 +1,14 @@
 
 import { Link } from 'react-router-dom';
 import { Row, Col, Card, Button } from 'react-bootstrap';
-
+import { useTituloPagina } from '../hooks/useTituloPagina';
 import { useCarrito } from '../context/CarritoContext';
 
 import '../styles/carrito.css';
 
 function Carrito() {
+  useTituloPagina('Carrito');
+
   const {
     carrito,
     actualizarCantidad,
@@ -15,6 +17,7 @@ function Carrito() {
     total,
     cantidadTotal
   } = useCarrito();
+
 
   // Formatear precios en pesos chilenos
   function formatearPrecio(precio) {

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useTituloPagina } from '../hooks/useTituloPagina';
 import { useCatalogo } from '../context/CatalogoContext';
 import TarjetaProducto from '../components/molecules/TarjetaProducto';
 
@@ -19,6 +19,8 @@ const categoriasDestacadas = [
 ];
 
 function Inicio() {
+  useTituloPagina('Inicio');
+
   const { productos } = useCatalogo();
   const navigate = useNavigate();
 
