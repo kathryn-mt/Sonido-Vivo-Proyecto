@@ -4,7 +4,7 @@ import { useCatalogo } from '../context/CatalogoContext';
 import TarjetaProducto from '../components/molecules/TarjetaProducto';
 
 function Catalogo() {
-  useTituloPagina('Catálogo');
+  
   
   const { productos } = useCatalogo();
   const [parametros] = useSearchParams();
@@ -14,7 +14,11 @@ function Catalogo() {
   const busqueda = (parametros.get('q') || '')
     .trim()
     .toLowerCase();
+  const tituloPagina = categoria
+    ? `Catálogo - ${categoria}`
+    : 'Catálogo';
 
+  useTituloPagina(tituloPagina);
   // Filtrar productos
   const productosFiltrados = productos.filter(producto => {
 
