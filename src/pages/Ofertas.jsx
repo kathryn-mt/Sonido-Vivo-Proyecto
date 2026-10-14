@@ -10,6 +10,8 @@ import { useTituloPagina } from '../hooks/useTituloPagina';
 
 function Ofertas() {
   useTituloPagina('Ofertas');
+  
+  const { productos } = useCatalogo();
 
   // Solo mostrar productos con descuento y stock
   const ofertasDestacadas = productos.filter(producto =>

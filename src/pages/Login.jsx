@@ -1,32 +1,22 @@
 
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FormularioLogin from '../components/organisms/FormularioLogin.jsx';
 import LayoutPrincipal from '../components/templates/LayoutPrincipal.jsx';
 import {useTituloPagina} from '../hooks/useTituloPagina';
 
 function Login() {
-  const [mensaje, setMensaje] = useState('');
   
   useTituloPagina('Iniciar sesión');
 
+  const navigate = useNavigate();
+
   function manejarLogin() {
-    setMensaje(
-      'Formulario validado correctamente. La autenticación aún no está implementada.'
-    );
+    navigate('/catalogo');
   }
 
   return (
     <LayoutPrincipal>
       <FormularioLogin onLogin={manejarLogin} />
-
-      {mensaje && (
-        <p
-          role="status"
-          className="text-success text-center mt-3"
-        >
-          {mensaje}
-        </p>
-      )}
     </LayoutPrincipal>
   );
 }

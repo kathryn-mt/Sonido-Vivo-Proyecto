@@ -19,6 +19,7 @@ const imagenesCategorias = {
 
 function Categorias() {
   useTituloPagina('Categorías');
+  const { productos } = useCatalogo();
 
   // Obtener categorías sin repetir
   const categorias = [
