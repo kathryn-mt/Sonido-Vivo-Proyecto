@@ -14,7 +14,9 @@ function TarjetaProducto({ producto }) {
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{nombre}</h5>
         <p className="card-text text-muted">{marca}</p>
-        <p className="card-text fw-bold fs-5">${precio.toLocaleString()}</p>
+        <p className="card-text fw-bold fs-5">
+          ${precio.toLocaleString()}
+        </p>
         
         <div className="mt-auto">
           <Link to={`/detalle/${id}`} className="text-decoration-none">
