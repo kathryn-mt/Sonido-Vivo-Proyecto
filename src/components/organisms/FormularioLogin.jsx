@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form } from "react-bootstrap";
 import CampoConLabel from "../molecules/CampoConLabel.jsx";
 import Boton from "../atoms/Boton.jsx";
 import { validarLogin } from '../../utils/validaciones.js';
+import { Link } from 'react-router-dom';
 
 function FormularioLogin({ onLogin }) {
   const [datos, setDatos] = useState({ email: '', password: '' });
@@ -64,7 +65,13 @@ function FormularioLogin({ onLogin }) {
                     />
                 </div>
                 </Form>
-              </Card>
+            </Card>
+            <p className="text-center mt-3 mb-0">
+              ¿No tienes una cuenta?{' '}
+              <Link to="/registro">
+                Regístrate aquí
+              </Link>
+            </p>
               
             </Col>
           </Row>
@@ -74,9 +81,3 @@ function FormularioLogin({ onLogin }) {
 
 export default FormularioLogin;
           
-              
-            
-
-        
-        
-

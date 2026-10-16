@@ -1,0 +1,12 @@
+/* Fondo del formulario de registro */
+.formulario-registro {
+  background: var(--fondo-degradado);
+  border: 1px solid #d7e6ed;
+  border-radius: 16px;
+}
+
+/* Campos blancos */
+.formulario-registro input,
+.formulario-registro select {
+  background-color: white;
+}

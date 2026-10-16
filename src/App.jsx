@@ -9,6 +9,7 @@ import Ofertas from './pages/Ofertas';
 import AdminProductos from './pages/AdminProductos';
 import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
+import Registro from './pages/Registro';
 
 function App() {
   return (
@@ -38,27 +39,20 @@ function App() {
           <LayoutPrincipal><DetalleProducto /></LayoutPrincipal>
         } />
 
-        {/* Login SIN Layout (Pantalla completa limpia) */}
         <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/checkout"
-          element={
-            <LayoutPrincipal>
-              <Checkout />
-            </LayoutPrincipal>
-          }
+        <Route path="/registro" element={<Registro />} />
+
+        <Route path="/checkout" element={
+          <LayoutPrincipal><Checkout /></LayoutPrincipal>
+        }
         />
 
-        <Route
-          path="/carrito"
-          element={
-            <LayoutPrincipal>
-              <Carrito />
-            </LayoutPrincipal>
+        <Route path="/carrito" element={
+            <LayoutPrincipal><Carrito /></LayoutPrincipal>
           }
-          
         />
+        
       </Routes>
     </BrowserRouter>
   );

@@ -9,6 +9,7 @@
   --color-acento: #f59e0b;
   --color-fondo-suave: #edf7fc;
   --color-borde: #d7e6ed;
+  --fondo-degradado: linear-gradient(120deg, #edf7fc 0%, #f5fbfe 65%, #fff7e9 100%);
 }
 
 body {

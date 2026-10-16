@@ -18,6 +18,15 @@ const categoriasDestacadas = [
   'Micrófonos'
 ];
 
+// Marcas destacadas de Sonido Vivo
+const marcasDestacadas = [
+  { nombre: 'Yamaha', imagen: '/assets/logo-yamaha.jpg' },
+  { nombre: 'Fender', imagen: '/assets/logo-fender.jpg' },
+  { nombre: 'Pearl', imagen: '/assets/logo-pearl.jpg' },
+  { nombre: 'Shure', imagen: '/assets/logo-shure.jpg' },
+  { nombre: 'Marshall', imagen: '/assets/logo-marshall.jpg' }
+];
+
 function Inicio() {
   useTituloPagina('Inicio');
 
@@ -326,8 +335,8 @@ function Inicio() {
             <div className="inicio-sobre-imagen">
 
               <img
-                src="/assets/squier-strat.jpg"
-                alt="Guitarra eléctrica del catálogo de Sonido Vivo"
+                src="/assets/logo-nuestratienda.jpg"
+                alt="tienda de instrumentos musicales"
                 loading="lazy"
               />
 
@@ -339,84 +348,101 @@ function Inicio() {
 
       </section>
 
-      {/* 5. INFORMACIÓN DE LA TIENDA */}
-      <section
-        className="py-5"
-        aria-labelledby="titulo-servicios"
-      >
+      {/* 7. NUESTRAS MARCAS */}
+      <section className="py-5">
 
-        <h2
-          id="titulo-servicios"
-          className="fw-bold text-center mb-4"
-        >
-          Encuentra lo que necesitas
+        <h2 className="fw-bold text-center mb-3">
+          Nuestras Marcas
         </h2>
 
-        <Row
-          xs={1}
-          md={3}
-          className="g-4"
-        >
+        <p className="text-muted text-center mb-4">
+          Conoce algunas de las marcas que forman
+          parte de nuestro catálogo musical.
+        </p>
 
-          {/* Variedad musical */}
+        <Row xs={2} sm={3} lg={5} className="g-3">
+
+          {marcasDestacadas.map(marca => (
+
+            <Col key={marca.nombre}>
+
+              <div className="inicio-marca">
+
+                <img
+                  src={marca.imagen}
+                  alt={`Logo de ${marca.nombre}`}
+                  className="inicio-marca-logo"
+                  loading="lazy"
+                />
+              </div>
+
+            </Col>
+
+          ))}
+
+        </Row>
+
+      </section>
+
+      {/* 6. NUESTROS SERVICIOS */}
+      <section className="py-5">
+
+        <h2 className="fw-bold text-center mb-4">
+          Nuestros Servicios
+        </h2>
+
+        <Row xs={1} md={3} className="g-4">
+
+          {/* Envíos a Regiones */}
           <Col>
-
             <div className="inicio-info">
-
               <h3 className="h5">
-                Variedad musical
+                Envíos a Regiones
               </h3>
 
               <p>
-                Explora guitarras, bajos, baterías,
-                teclados y equipos de audio.
+                Realizamos envíos a distintas regiones de Chile
+                mediante Starken y Chilexpress, con seguimiento
+                de pedidos.
               </p>
-
             </div>
-
           </Col>
 
-          {/* Precios */}
+          {/* Servicio Técnico */}
           <Col>
-
             <div className="inicio-info">
-
               <h3 className="h5">
-                Precios claros
+                Servicio Técnico
               </h3>
 
               <p>
-                Consulta los precios de los instrumentos
-                directamente desde el catálogo.
+                Ofrecemos reparación, ajustes y mantenimiento
+                de instrumentos musicales.
               </p>
-
             </div>
-
           </Col>
 
-          {/* Stock */}
+          {/* Asesoría Musical */}
           <Col>
-
             <div className="inicio-info">
-
               <h3 className="h5">
-                Disponibilidad
+                Asesoría Musical
               </h3>
 
               <p>
-                Revisa la información de stock de cada
-                producto antes de elegirlo.
+                Te ayudamos a elegir el instrumento musical
+                que mejor se adapte a tus necesidades,
+                experiencia y presupuesto.
               </p>
-
             </div>
-
           </Col>
 
         </Row>
 
       </section>
 
-      {/* 6. SECCIÓN FINAL */}
+
+      {/* 5. SECCIÓN FINAL */}
       <section className="inicio-cierre text-center">
 
         <h2 className="fw-bold">
