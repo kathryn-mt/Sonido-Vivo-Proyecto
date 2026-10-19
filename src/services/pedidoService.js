@@ -1,6 +1,7 @@
 
 const CLAVE = 'sonido_vivo_pedidos';
 
+// Guardar un pedido nuevo
 export function registrarPedido(datos) {
   const guardados = JSON.parse(
     localStorage.getItem(CLAVE) || '[]'
@@ -23,4 +24,17 @@ export function registrarPedido(datos) {
   );
 
   return pedido;
+}
+
+// Recuperar los pedidos guardados
+export function listarPedidos() {
+  const guardados = JSON.parse(
+    localStorage.getItem(CLAVE) || '[]'
+  );
+
+  if (!Array.isArray(guardados)) {
+    throw new Error('No se pudieron leer los pedidos.');
+  }
+
+  return guardados;
 }
