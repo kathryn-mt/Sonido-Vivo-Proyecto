@@ -10,6 +10,7 @@ import AdminProductos from './pages/AdminProductos';
 import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import Registro from './pages/Registro';
+import Contacto from './pages/Contacto';
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
         <Route path="/" element={
           <LayoutPrincipal><Inicio /></LayoutPrincipal>
         } />
-
+        <Route path="/contacto" element={
+          <LayoutPrincipal><Contacto /></LayoutPrincipal>
+        } />
         <Route path="/catalogo" element={
           <LayoutPrincipal><Catalogo /></LayoutPrincipal>
         } />

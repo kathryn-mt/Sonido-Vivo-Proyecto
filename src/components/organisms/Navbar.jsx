@@ -47,6 +47,10 @@ function Navbar() {
               Inicio
             </Nav.Link>
 
+            <Nav.Link as={Link} to="/contacto">
+              Contacto
+            </Nav.Link>
+
             {/* Menú desplegable de categorías */}
             <NavDropdown
               title="Categorías"
