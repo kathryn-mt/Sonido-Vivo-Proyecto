@@ -320,13 +320,27 @@ function Inicio() {
               seguir desarrollando su talento.
             </p>
 
-            <Button
-              as={Link}
-              to="/catalogo"
-              variant="outline-primary"
-            >
-              Conocer nuestros productos
-            </Button>
+            
+            <div className="d-flex gap-3 flex-wrap mt-3">
+
+              <Button
+                as={Link}
+                to="/nosotros"
+                variant="primary"
+              >
+                Conoce más sobre nosotros
+              </Button>
+
+              <Button
+                as={Link}
+                to="/catalogo"
+                variant="outline-primary"
+              >
+                Ver nuestros productos
+              </Button>
+
+            </div>
+
 
           </Col>
 
