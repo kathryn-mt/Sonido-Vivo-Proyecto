@@ -316,7 +316,31 @@ function Contacto() {
                 <strong>Ubicación:</strong>
                 {' '}Viña del Mar, Chile
               </p>
+              <div className="mb-4">
+                <h3 className="h6 fw-bold mb-3"
+>                  Encuentranos en el mapa
+                </h3>
 
+                <iframe
+                  title="Mapa de Ubicación de Sonido Vivo en Viña del mar, Chile"
+                  src="https://www.google.com/maps?q=Vi%C3%B1a%20del%20Mar%2C%20Chile&output=embed"
+                  width="100%"
+                  height="260"
+                  style={{ border: 0, borderRadius: '10px' }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+
+                <a
+                href="https://www.google.com/maps/search/?api=1&query=Vi%C3%B1a%20del%20Mar%2C%20Chile"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-primary btn-sm mt-3"
+                ></a> 
+
+
+              </div> 
               <p>
                 Somos una tienda dedicada a
                 instrumentos musicales, equipos
