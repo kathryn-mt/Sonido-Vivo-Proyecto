@@ -1,4 +1,4 @@
-
+import { listarProductos, descontarStock } from './productoService';
 const CLAVE = 'sonido_vivo_pedidos';
 
 // Guardar un pedido nuevo
@@ -83,4 +83,49 @@ export function actualizarEstadoPedido(id, nuevoEstado) {
   );
 
   return pedidoActualizado;
+}
+
+export function registrarPedidoConStock(datos) {
+
+  // Comprobar que los pedidos guardados se puedan leer
+  listarPedidos();
+
+  // Guardar una copia del inventario actual
+  const inventarioAnterior = JSON.stringify(
+    listarProductos()
+  );
+
+  let stockDescontado = false;
+
+  try {
+
+    // Primero comprobar y descontar las existencias
+    descontarStock(datos.productos);
+
+    stockDescontado = true;
+
+    // Registrar el pedido una vez actualizado el stock
+    const pedido = registrarPedido(datos);
+
+    return pedido;
+
+  } catch (error) {
+
+    // Si el pedido falló después del descuento,
+    // intentar recuperar el inventario anterior
+    if (stockDescontado) {
+      try {
+        localStorage.setItem(
+          'sonido_vivo_productos',
+          inventarioAnterior
+        );
+      } catch {
+        throw new Error(
+          'No se pudo registrar el pedido ni restaurar el inventario. Revisa los datos guardados.'
+        );
+      }
+    }
+
+    throw error;
+  }
 }

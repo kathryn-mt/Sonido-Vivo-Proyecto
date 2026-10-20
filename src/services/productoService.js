@@ -94,3 +94,68 @@ export function eliminarProducto(id) {
 
   return true;
 }
+export function descontarStock(productosComprados) {
+   if (
+    !Array.isArray(productosComprados) ||
+    productosComprados.length === 0
+  ) {
+    throw new Error('No hay productos para descontar.');
+  }
+
+  // Obtener el inventario actual
+  const productos = listarProductos();
+
+  // Agrupar las cantidades por producto
+  const cantidades = new Map();
+
+  for (const item of productosComprados) {
+    const id = Number(item.id);
+    const cantidad = Number(item.cantidad);
+
+    if (
+      !Number.isInteger(id) ||
+      !Number.isInteger(cantidad) ||
+      cantidad <= 0
+    ) {
+      throw new Error(
+        'La compra contiene productos o cantidades inválidas.'
+      );
+    }
+
+    cantidades.set(
+      id,
+      (cantidades.get(id) || 0) + cantidad
+    );
+  }
+
+  // Verificar todas las existencias antes de descontar
+  for (const [id, cantidad] of cantidades) {
+    const producto = productos.find(
+      p => p.id === id
+    );
+
+    if (!producto) {
+      throw new Error(
+        `No se encontró el producto ${id}.`
+      );
+    }
+
+    if (Number(producto.stock) < cantidad) {
+      throw new Error(
+        `Stock insuficiente para ${producto.nombre}.`
+      );
+    }
+  }
+
+  // Calcular el nuevo stock de cada producto
+  const productosActualizados = productos.map(producto => ({
+    ...producto,
+    stock: Number(producto.stock) -
+      (cantidades.get(producto.id) || 0)
+  }));
+
+  // Guardar el inventario actualizado
+  guardar(productosActualizados);
+
+  return productosActualizados;
+}

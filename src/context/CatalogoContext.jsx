@@ -29,7 +29,10 @@ export function CatalogoProvider({ children }) {
 
     return listarProductos();
   });
-
+  // Actualizar el catalogo despues de una compra
+  function refrescarProductos() {
+    setProductos(listarProductos());
+  }
   // CREATE: Agregar producto
   function crearProducto(datos) {
     const nuevo = crearProductoService(datos);
@@ -74,7 +77,8 @@ export function CatalogoProvider({ children }) {
         productos,
         crearProducto,
         actualizarProducto,
-        eliminarProducto
+        eliminarProducto,
+        refrescarProductos
       }}
     >
       {children}

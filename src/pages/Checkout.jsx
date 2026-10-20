@@ -12,10 +12,12 @@ import {
 
 import { useCarrito } from '../context/CarritoContext';
 import { validarCheckout } from '../utils/validacionesCheckout';
-import { registrarPedido } from '../services/pedidoService';
+import { registrarPedidoConStock } from '../services/pedidoService';
+import { useCatalogo } from '../context/CatalogoContext';
 
 function Checkout() {
   useTituloPagina('Checkout');
+  const { refrescarProductos } = useCatalogo();
   const {
     carrito,
     total,
@@ -69,7 +71,7 @@ function Checkout() {
     }
 
     try {
-      const nuevoPedido = registrarPedido({
+      const nuevoPedido = registrarPedidoConStock({
         cliente: {
           nombre: datos.nombre.trim(),
           correo: datos.correo.trim(),
@@ -93,11 +95,15 @@ function Checkout() {
         cantidadTotal,
         totalProductos: total
       });
-
-      vaciarCarrito();
+      
       setPedidoConfirmado(nuevoPedido);
-    } catch {
+      vaciarCarrito();
+      refrescarProductos();
+      
+
+    } catch (error){
       setMensajeError(
+        error.message ||
         'No se pudo guardar el pedido. Intenta nuevamente.'
       );
     }
