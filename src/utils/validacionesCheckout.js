@@ -2,18 +2,32 @@
 export function validarCheckout(datos, entrega) {
   const errores = {};
 
-  if (!datos.nombre.trim()) {
-    errores.nombre = 'Ingresa tu nombre completo.';
+  // Validar nombre: solo letras y espacios
+  const nombre = datos.nombre.trim();
+
+  if (
+    nombre.length < 3 ||
+    !/^[\p{L}\s]+$/u.test(nombre)
+  ) {
+    errores.nombre =
+      'Ingresa un nombre válido, solo con letras.';
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.correo.trim())) {
     errores.correo = 'Ingresa un correo válido.';
   }
+  
+  // Aceptar números, espacios y un + inicial
+  const telefonoTexto = datos.telefono.trim();
+  const digitos = telefonoTexto.replace(/\D/g, '');
 
-  const telefono = datos.telefono.replace(/\D/g, '');
-
-  if (telefono.length < 8 || telefono.length > 11) {
-    errores.telefono = 'Ingresa un teléfono válido.';
+  if (
+    !/^\+?[\d\s]+$/.test(telefonoTexto) ||
+    digitos.length < 8 ||
+    digitos.length > 11
+  ) {
+    errores.telefono =
+      'Ingresa un teléfono válido, sin letras, de 8 a 11 dígitos.';
   }
 
   if (entrega === 'despacho') {
