@@ -11,6 +11,7 @@ import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import Registro from './pages/Registro';
 import Contacto from './pages/Contacto';
+import AdminPedidos from './pages/AdminPedidos';
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
         <Route path="/catalogo" element={
           <LayoutPrincipal><Catalogo /></LayoutPrincipal>
         } />
+        <Route path="/admin/pedidos" element={
+          <LayoutPrincipal><AdminPedidos /></LayoutPrincipal>
+        } />
         {/* Nueva ruta */}
         <Route path="/categorias" element={
           <LayoutPrincipal><Categorias /></LayoutPrincipal>
@@ -37,6 +41,10 @@ function App() {
         <Route path="/admin/productos" element={
           <LayoutPrincipal><AdminProductos /></LayoutPrincipal>
         } />
+        
+        <Route path="/admin/pedidos" element={
+          <LayoutPrincipal><AdminPedidos /></LayoutPrincipal>
+        }/>
 
         <Route path="/detalle/:id" element={
           <LayoutPrincipal><DetalleProducto /></LayoutPrincipal>
