@@ -30,15 +30,40 @@ export function validarCheckout(datos, entrega) {
       'Ingresa un teléfono válido, sin letras, de 8 a 11 dígitos.';
   }
 
+
   if (entrega === 'despacho') {
-    if (!datos.direccion.trim()) {
+    const direccion = datos.direccion.trim().replace(/\s+/g, ' ');
+    const comuna = datos.comuna.trim().replace(/\s+/g, ' ');
+
+    // Dirección: permite letras, números y signos habituales.
+    const formatoDireccion = /^[\p{L}\p{N}\s.,#°º'/-]+$/u;
+
+    const tieneNombreCalle = /\p{L}/u.test(direccion);
+    const tieneNumero = /\p{N}/u.test(direccion);
+    const sinNumero = /\bS\s*\/\s*N\b/i.test(direccion);
+
+    if (!direccion) {
       errores.direccion = 'Ingresa tu dirección.';
+    } else if (
+      direccion.length < 6 ||
+      direccion.length > 120 ||
+      !formatoDireccion.test(direccion) ||
+      !tieneNombreCalle ||
+      (!tieneNumero && !sinNumero)
+    ) {
+      errores.direccion =
+        'Ingresa una dirección válida con calle y número (o S/N).';
     }
 
-    if (!datos.comuna.trim()) {
+    // Comuna: solo letras, espacios, tildes y signos de nombres.
+    const formatoComuna = /^[\p{L}\s.'-]{2,60}$/u;
+
+    if (!comuna) {
       errores.comuna = 'Ingresa tu comuna.';
+    } else if (!formatoComuna.test(comuna)) {
+      errores.comuna =
+        'Ingresa una comuna válida, sin números.';
     }
   }
-
   return errores;
 }
