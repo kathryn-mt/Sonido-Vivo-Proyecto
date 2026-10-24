@@ -44,51 +44,57 @@ function Contacto() {
 
     setConfirmacion('');
   }
-
-  // Validar los datos ingresados
+ //Validar el formulario antes de enviarlo
   function validarFormulario() {
-    const nuevosErrores = {};
+  const nuevosErrores = {};
 
-    const nombre = datos.nombre.trim();
-    const correo = datos.correo.trim();
-    const telefono = datos.telefono.trim();
-    const mensaje = datos.mensaje.trim();
+  const nombre = datos.nombre.trim();
+  const correo = datos.correo.trim();
+  const telefono = datos.telefono.trim();
+  const mensaje = datos.mensaje.trim();
 
-    // Validar nombre
-    if (
-      nombre.length < 3 ||
-      !/^[\p{L}\s]+$/u.test(nombre)
-    ) {
-      nuevosErrores.nombre =
-        'Ingresa un nombre válido de al menos 3 letras.';
-    }
-
-    // Validar correo electrónico
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-      nuevosErrores.correo =
-        'Ingresa un correo electrónico válido.';
-    }
-
-    // Validar teléfono: solo números
-    if (!/^\d{8,11}$/.test(telefono)) {
-      nuevosErrores.telefono =
-        'Ingresa un teléfono de 8 a 11 dígitos, sin espacios.';
-    }
-
-    // Validar motivo
-    if (!datos.motivo) {
-      nuevosErrores.motivo =
-        'Selecciona un motivo de consulta.';
-    }
-
-    // Validar mensaje
-    if (mensaje.length < 10) {
-      nuevosErrores.mensaje =
-        'El mensaje debe tener al menos 10 caracteres.';
-    }
-
-    return nuevosErrores;
+  // Validar nombre
+  if (
+    nombre.length < 3 ||
+    !/^[\p{L}\s]+$/u.test(nombre)
+  ) {
+    nuevosErrores.nombre =
+      'Ingresa un nombre válido de al menos 3 letras.';
   }
+
+  // Validar correo electrónico
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    nuevosErrores.correo =
+      'Ingresa un correo electrónico válido.';
+  }
+
+  // Validar teléfono: de 9 a 11 dígitos
+  // Permite un signo + opcional al inicio
+  const digitos = telefono.replace(/\D/g, '');
+
+  if (
+    !/^\+?[\d\s]+$/.test(telefono) ||
+    digitos.length < 9 ||
+    digitos.length > 11
+  ) {
+    nuevosErrores.telefono =
+      'Ingresa un teléfono válido de 9 a 11 dígitos, sin letras.';
+  }
+
+  // Validar motivo
+  if (!datos.motivo) {
+    nuevosErrores.motivo =
+      'Selecciona un motivo de consulta.';
+  }
+
+  // Validar mensaje
+  if (mensaje.length < 10) {
+    nuevosErrores.mensaje =
+      'El mensaje debe tener al menos 10 caracteres.';
+  }
+
+  return nuevosErrores;
+}
 
   // Procesar el formulario
   function manejarEnvio(e) {
