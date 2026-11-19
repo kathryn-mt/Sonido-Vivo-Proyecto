@@ -15,9 +15,11 @@ const CatalogoContext = createContext(null);
 const CLAVE = 'sonido_vivo_productos';
 
 // Proveedor del catálogo
-export function CatalogoProvider({ children }) {
+export function CatalogoProvider(props) {
 
-  const [productos, setProductos] = useState(() => {
+  // Crear el estado de los productos
+
+  const estadoProductos = useState(() => {
 
     // Cargar productos iniciales solo la primera vez
     if (localStorage.getItem(CLAVE) === null) {
@@ -29,6 +31,10 @@ export function CatalogoProvider({ children }) {
 
     return listarProductos();
   });
+    // Obtener el estado sin desestructuración
+
+  const productos = estadoProductos[0];
+  const setProductos = estadoProductos[1];
   // Actualizar el catalogo despues de una compra
   function refrescarProductos() {
     setProductos(listarProductos());
@@ -81,7 +87,7 @@ export function CatalogoProvider({ children }) {
         refrescarProductos
       }}
     >
-      {children}
+      {props.children}
     </CatalogoContext.Provider>
   );
 }

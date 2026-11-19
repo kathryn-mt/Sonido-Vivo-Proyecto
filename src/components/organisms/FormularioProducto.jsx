@@ -1,11 +1,13 @@
-
 import { useState } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 
 import CampoConLabel from '../molecules/CampoConLabel';
 import { validarProducto } from '../../utils/validacionesProducto';
 
-// Categorías de Sonido Vivo
+// ==========================================
+// CATEGORÍAS DE SONIDO VIVO
+// ==========================================
+
 const categorias = [
   'Guitarras Acústicas',
   'Guitarras Eléctricas',
@@ -19,7 +21,10 @@ const categorias = [
   'Estudio y Grabación'
 ];
 
-// Campos del formulario
+// ==========================================
+// CAMPOS DEL FORMULARIO
+// ==========================================
+
 const campos = [
   { nombre: 'codigo', etiqueta: 'Código' },
   { nombre: 'nombre', etiqueta: 'Nombre' },
@@ -34,15 +39,26 @@ const campos = [
   { nombre: 'stock', etiqueta: 'Stock', tipo: 'number' }
 ];
 
-function FormularioProducto({
-  producto = null,
-  productos = [],
-  onGuardar,
-  onCancelar
-}) {
+// ==========================================
+// COMPONENTE FORMULARIO PRODUCTO
+// ==========================================
 
-  // Datos del producto
-  const [datos, setDatos] = useState({
+function FormularioProducto(props) {
+
+  // ========================================
+  // OBTENER PROPIEDADES SIN DESESTRUCTURACIÓN
+  // ========================================
+
+  const producto = props.producto ?? null;
+  const productos = props.productos ?? [];
+  const onGuardar = props.onGuardar;
+  const onCancelar = props.onCancelar;
+
+  // ========================================
+  // ESTADO DE LOS DATOS DEL PRODUCTO
+  // ========================================
+
+  const estadoDatos = useState({
     codigo: producto?.codigo ?? '',
     nombre: producto?.nombre ?? '',
     marca: producto?.marca ?? '',
@@ -55,10 +71,31 @@ function FormularioProducto({
     imagen: producto?.imagen ?? ''
   });
 
-  const [errores, setErrores] = useState({});
-  const [intentoEnvio, setIntentoEnvio] = useState(false);
+  const datos = estadoDatos[0];
+  const setDatos = estadoDatos[1];
 
-  // Validar campos normales y descuentos
+  // ========================================
+  // ESTADO DE ERRORES
+  // ========================================
+
+  const estadoErrores = useState({});
+
+  const errores = estadoErrores[0];
+  const setErrores = estadoErrores[1];
+
+  // ========================================
+  // ESTADO DE INTENTO DE ENVÍO
+  // ========================================
+
+  const estadoIntentoEnvio = useState(false);
+
+  const intentoEnvio = estadoIntentoEnvio[0];
+  const setIntentoEnvio = estadoIntentoEnvio[1];
+
+  // ========================================
+  // VALIDAR FORMULARIO
+  // ========================================
+
   function validarFormulario(datosAValidar) {
 
     const nuevosErrores = validarProducto(
@@ -70,7 +107,7 @@ function FormularioProducto({
     const precioActual = Number(datosAValidar.precio);
     const precioAnterior = datosAValidar.precioAnterior;
 
-    // Solo validar el precio anterior si se ingresó
+    // Validar precio anterior solamente si existe
     if (precioAnterior !== '') {
 
       const precioAnteriorNumero = Number(precioAnterior);
@@ -79,6 +116,7 @@ function FormularioProducto({
         !Number.isFinite(precioAnteriorNumero) ||
         precioAnteriorNumero <= 0
       ) {
+
         nuevosErrores.precioAnterior =
           'Ingresa un precio anterior válido.';
 
@@ -86,6 +124,7 @@ function FormularioProducto({
         precioActual > 0 &&
         precioAnteriorNumero <= precioActual
       ) {
+
         nuevosErrores.precioAnterior =
           'El precio anterior debe ser mayor al precio actual.';
       }
@@ -94,27 +133,39 @@ function FormularioProducto({
     return nuevosErrores;
   }
 
-  // Actualizar datos mientras el usuario escribe
-  function manejarCambio(e) {
-    const { name, value } = e.target;
+  // ========================================
+  // ACTUALIZAR DATOS DEL FORMULARIO
+  // ========================================
 
-    const nuevosDatos = {
-      ...datos,
-      [name]: value
-    };
+  function manejarCambio(e) {
+
+    // Obtener los valores sin desestructuración
+    const name = e.target.name;
+    const value = e.target.value;
+
+    // Crear una copia de los datos
+    const nuevosDatos = Object.assign({}, datos);
+
+    // Actualizar el campo correspondiente
+    nuevosDatos[name] = value;
 
     setDatos(nuevosDatos);
 
     // Actualizar errores si ya intentó guardar
     if (intentoEnvio) {
+
       setErrores(
         validarFormulario(nuevosDatos)
       );
     }
   }
 
-  // Guardar producto
+  // ========================================
+  // GUARDAR PRODUCTO
+  // ========================================
+
   function manejarEnvio(e) {
+
     e.preventDefault();
 
     setIntentoEnvio(true);
@@ -123,12 +174,12 @@ function FormularioProducto({
 
     setErrores(nuevosErrores);
 
-    // No guardar si hay errores
+    // No guardar si existen errores
     if (Object.keys(nuevosErrores).length > 0) {
       return;
     }
 
-    // Enviar datos al componente administrador
+    // Enviar datos al administrador
     onGuardar({
       codigo: datos.codigo.trim().toUpperCase(),
       nombre: datos.nombre.trim(),
@@ -148,8 +199,14 @@ function FormularioProducto({
     });
   }
 
+  // ========================================
+  // MOSTRAR FORMULARIO
+  // ========================================
+
   return (
+
     <Card className="shadow-sm">
+
       <Card.Body>
 
         <h2 className="h4 mb-4">
@@ -158,27 +215,34 @@ function FormularioProducto({
 
         <Form noValidate onSubmit={manejarEnvio}>
 
-          {/* Datos principales */}
+          {/* DATOS PRINCIPALES */}
+
           <Row>
 
-            {campos.map(campo => (
-              <Col md={6} key={campo.nombre}>
+            {campos.map(function (campo) {
 
-                <CampoConLabel
-                  label={campo.etiqueta}
-                  name={campo.nombre}
-                  type={campo.tipo || 'text'}
-                  value={datos[campo.nombre]}
-                  onChange={manejarCambio}
-                  error={errores[campo.nombre]}
-                />
+              return (
 
-              </Col>
-            ))}
+                <Col md={6} key={campo.nombre}>
+
+                  <CampoConLabel
+                    label={campo.etiqueta}
+                    name={campo.nombre}
+                    type={campo.tipo || 'text'}
+                    value={datos[campo.nombre]}
+                    onChange={manejarCambio}
+                    error={errores[campo.nombre]}
+                  />
+
+                </Col>
+
+              );
+            })}
 
           </Row>
 
-          {/* Información sobre las ofertas */}
+          {/* INFORMACIÓN DE OFERTAS */}
+
           <p className="text-muted small mb-4">
             Si el producto tiene descuento, ingresa el
             precio original en "Precio anterior" y el
@@ -186,11 +250,13 @@ function FormularioProducto({
             Si no tiene oferta, deja vacío el precio anterior.
           </p>
 
-          {/* Categoría */}
+          {/* CATEGORÍA */}
+
           <Form.Group
             className="mb-3"
             controlId="categoria"
           >
+
             <Form.Label>
               Categoría
             </Form.Label>
@@ -206,11 +272,15 @@ function FormularioProducto({
                 Seleccionar categoría
               </option>
 
-              {categorias.map(cat => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
+              {categorias.map(function (cat) {
+
+                return (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                );
+
+              })}
 
             </Form.Select>
 
@@ -220,11 +290,13 @@ function FormularioProducto({
 
           </Form.Group>
 
-          {/* Descripción */}
+          {/* DESCRIPCIÓN */}
+
           <Form.Group
             className="mb-3"
             controlId="descripcion"
           >
+
             <Form.Label>
               Descripción
             </Form.Label>
@@ -244,7 +316,8 @@ function FormularioProducto({
 
           </Form.Group>
 
-          {/* Imagen del producto */}
+          {/* IMAGEN DEL PRODUCTO */}
+
           <CampoConLabel
             label="Ruta de imagen (opcional)"
             name="imagen"
@@ -253,7 +326,8 @@ function FormularioProducto({
             onChange={manejarCambio}
           />
 
-          {/* Botones */}
+          {/* BOTONES */}
+
           <div className="d-flex gap-2 flex-wrap mt-3">
 
             <Button
@@ -278,6 +352,7 @@ function FormularioProducto({
         </Form>
 
       </Card.Body>
+
     </Card>
   );
 }

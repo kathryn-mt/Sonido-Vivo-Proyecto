@@ -1,90 +1,128 @@
-
 import productosIniciales from '../data/productos.json';
 
 const KEY = 'sonido_vivo_productos';
 
-// Leer productos desde localStorage
+
+// LEER PRODUCTOS
+
+
 function leer() {
   const guardados = localStorage.getItem(KEY);
 
-  // Solo cargar productos iniciales la primera vez
+  // Cargar productos iniciales solo la primera vez
   if (guardados === null) {
     localStorage.setItem(
       KEY,
       JSON.stringify(productosIniciales)
     );
 
-    return [...productosIniciales];
+    return productosIniciales.slice();
   }
 
   return JSON.parse(guardados);
 }
 
-// Guardar productos
+
+// GUARDAR PRODUCTOS
+
+
 function guardar(productos) {
-  localStorage.setItem(KEY, JSON.stringify(productos));
+  localStorage.setItem(
+    KEY,
+    JSON.stringify(productos)
+  );
 }
 
-// READ: listar todos los productos
+
+// READ: LISTAR PRODUCTOS
+
+
 export function listarProductos() {
   return leer();
 }
 
-// READ: buscar un producto por ID
+
+// READ: OBTENER PRODUCTO POR ID
+
+
 export function obtenerProducto(id) {
-  return leer().find(
-    producto => producto.id === Number(id)
-  ) ?? null;
+  const productos = leer();
+
+  const producto = productos.find(function (productoActual) {
+    return productoActual.id === Number(id);
+  });
+
+  return producto || null;
 }
 
-// CREATE: agregar producto
+
+// CREATE: CREAR PRODUCTO
+
+
 export function crearProducto(datos) {
   const productos = leer();
 
-  const nuevoId = Math.max(
-    0,
-    ...productos.map(p => p.id)
-  ) + 1;
+  let nuevoId = 1;
 
-  const nuevoProducto = {
-    ...datos,
-    id: nuevoId
-  };
+  // Buscar el ID más alto
+  for (const producto of productos) {
+    if (Number(producto.id) >= nuevoId) {
+      nuevoId = Number(producto.id) + 1;
+    }
+  }
 
-  guardar([...productos, nuevoProducto]);
+  // Crear producto sin utilizar ...
+  const nuevoProducto = Object.assign({}, datos);
+
+  nuevoProducto.id = nuevoId;
+
+  productos.push(nuevoProducto);
+
+  guardar(productos);
 
   return nuevoProducto;
 }
 
-// UPDATE: actualizar producto
+
+// UPDATE: ACTUALIZAR PRODUCTO
+
+
 export function actualizarProducto(id, cambios) {
   const productos = leer();
+
   const productoId = Number(id);
 
-  const existe = productos.some(
-    p => p.id === productoId
-  );
+  const producto = productos.find(function (productoActual) {
+    return productoActual.id === productoId;
+  });
 
-  if (!existe) return null;
+  if (!producto) {
+    return null;
+  }
 
-  const actualizados = productos.map(p =>
-    p.id === productoId
-      ? { ...p, ...cambios, id: productoId }
-      : p
-  );
+  // Aplicar cambios sin utilizar ...
+  Object.assign(producto, cambios);
 
-  guardar(actualizados);
+  // Mantener el ID original
+  producto.id = productoId;
 
-  return actualizados.find(p => p.id === productoId);
+  guardar(productos);
+
+  return producto;
 }
 
-// DELETE: eliminar producto
+
+// DELETE: ELIMINAR PRODUCTO
+
+
 export function eliminarProducto(id) {
   const productos = leer();
 
-  const actualizados = productos.filter(
-    p => p.id !== Number(id)
-  );
+  const productoId = Number(id);
+
+  const actualizados = productos.filter(function (producto) {
+    return producto.id !== productoId;
+  });
 
   if (actualizados.length === productos.length) {
     return false;
@@ -94,21 +132,33 @@ export function eliminarProducto(id) {
 
   return true;
 }
+
+
+// DESCONTAR STOCK
+
+
 export function descontarStock(productosComprados) {
-   if (
+
+  // Validar que existan productos para comprar
+  if (
     !Array.isArray(productosComprados) ||
     productosComprados.length === 0
   ) {
-    throw new Error('No hay productos para descontar.');
+    throw new Error(
+      'No hay productos para descontar.'
+    );
   }
 
-  // Obtener el inventario actual
   const productos = listarProductos();
 
-  // Agrupar las cantidades por producto
   const cantidades = new Map();
 
+ 
+  // AGRUPAR CANTIDADES
+ 
+
   for (const item of productosComprados) {
+
     const id = Number(item.id);
     const cantidad = Number(item.cantidad);
 
@@ -122,17 +172,23 @@ export function descontarStock(productosComprados) {
       );
     }
 
+    const cantidadAnterior = cantidades.get(id) || 0;
+
     cantidades.set(
       id,
-      (cantidades.get(id) || 0) + cantidad
+      cantidadAnterior + cantidad
     );
   }
 
-  // Verificar todas las existencias antes de descontar
-  for (const [id, cantidad] of cantidades) {
-    const producto = productos.find(
-      p => p.id === id
-    );
+ 
+  // VERIFICAR STOCK
+  
+
+  cantidades.forEach(function (cantidad, id) {
+
+    const producto = productos.find(function (productoActual) {
+      return productoActual.id === id;
+    });
 
     if (!producto) {
       throw new Error(
@@ -145,16 +201,28 @@ export function descontarStock(productosComprados) {
         `Stock insuficiente para ${producto.nombre}.`
       );
     }
-  }
+  });
 
-  // Calcular el nuevo stock de cada producto
-  const productosActualizados = productos.map(producto => ({
-    ...producto,
-    stock: Number(producto.stock) -
-      (cantidades.get(producto.id) || 0)
-  }));
+  
+  // ACTUALIZAR STOCK
+  
 
-  // Guardar el inventario actualizado
+  const productosActualizados = productos.map(function (producto) {
+
+    const productoActualizado = Object.assign(
+      {},
+      producto
+    );
+
+    const cantidadDescontar = cantidades.get(producto.id) || 0;
+
+    productoActualizado.stock =
+      Number(producto.stock) - cantidadDescontar;
+
+    return productoActualizado;
+  });
+
+  // Guardar inventario actualizado
   guardar(productosActualizados);
 
   return productosActualizados;

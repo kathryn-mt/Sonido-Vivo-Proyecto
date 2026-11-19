@@ -5,10 +5,14 @@ import TarjetaProducto from '../components/molecules/TarjetaProducto';
 
 function Catalogo() {
   
-  
-  const { productos } = useCatalogo();
-  const [parametros] = useSearchParams();
+  const catalogo = useCatalogo();
 
+  const productos = catalogo.productos;
+
+  
+  const estadoParametros = useSearchParams();
+
+  const parametros = estadoParametros[0];
   // Obtener filtros desde la URL
   const categoria = parametros.get('cat') || '';
   const busqueda = (parametros.get('q') || '')
