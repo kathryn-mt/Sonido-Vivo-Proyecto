@@ -5,17 +5,25 @@ import Boton from "../atoms/Boton.jsx";
 import { validarLogin } from '../../utils/validaciones.js';
 import { Link } from 'react-router-dom';
 
-function FormularioLogin({ onLogin }) {
-  const [datos, setDatos] = useState({ email: '', password: '' });
-  
+function FormularioLogin({ onLogin, error }) {
+
+  const [datos, setDatos] = useState({
+    email: '',
+    password: ''
+  });
+
   const [errores, setErrores] = useState({});
 
   const handleChange = (e) => {
-    setDatos({ 
-      ...datos, 
-      [e.target.name]: e.target.value 
+    setDatos({
+      ...datos,
+      [e.target.name]: e.target.value
     });
-    setErrores({ ...errores, [e.target.name]:''});
+
+    setErrores({
+      ...errores,
+      [e.target.name]: ''
+    });
   };
 
   const handleSubmit = (e) => {
@@ -23,61 +31,77 @@ function FormularioLogin({ onLogin }) {
 
     const erroresValidacion = validarLogin(datos);
     setErrores(erroresValidacion);
-    
+
     if (Object.keys(erroresValidacion).length === 0) {
-
-      onLogin(datos); 
-    } 
+      onLogin(datos);
+    }
   };
-    return (
-        <Container className="mt-5">
-          <Row className="justify-content-center">
-            <Col xs={12} md={8} lg={6}>
-               <Card className="p-4 shadow">
-                <h2 className="text-center mb-4">Sonido Vivo</h2>
-                <p className="text-center mb-4">Inicia sesión para continuar</p>
-                <Form noValidate onSubmit={handleSubmit}>
-                <CampoConLabel
-                  label="Correo electrónico"
-                  name="email"   
-                  type="email"
-                  placeholder="tu_@correo.com"
-                  value={datos.email}
-                  onChange={handleChange} 
-                  error={errores.email}  
-                /> 
 
-                <CampoConLabel
-                  label="Contraseña"
-                  name="password" 
-                  type="password"
-                  placeholder="********"
-                  value={datos.password} 
-                  onChange={handleChange} 
-                  error={errores.password} 
-                />
+  return (
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col xs={12} md={8} lg={6}>
+          <Card className="p-4 shadow">
 
-                <div className="mt-3">
-                    <Boton
-                      texto="Ingresar"
-                      variante="primary"
-                      tipo="submit"
-                    />
-                </div>
-                </Form>
-            </Card>
-            <p className="text-center mt-3 mb-0">
-              ¿No tienes una cuenta?{' '}
-              <Link to="/registro">
-                Regístrate aquí
-              </Link>
+            <h2 className="text-center mb-4">
+              Sonido Vivo
+            </h2>
+
+            <p className="text-center mb-4">
+              Inicia sesión para continuar
             </p>
-              
-            </Col>
-          </Row>
-        </Container>
-    );
+
+            <Form noValidate onSubmit={handleSubmit}>
+
+              <CampoConLabel
+                label="Correo electrónico"
+                name="email"
+                type="email"
+                placeholder="tu_@correo.com"
+                value={datos.email}
+                onChange={handleChange}
+                error={errores.email}
+              />
+
+              <CampoConLabel
+                label="Contraseña"
+                name="password"
+                type="password"
+                placeholder="********"
+                value={datos.password}
+                onChange={handleChange}
+                error={errores.password}
+              />
+
+              {/* Mostrar errores del backend */}
+              {error && (
+                <div className="alert alert-danger mt-3" role="alert">
+                  {error}
+                </div>
+              )}
+
+              <div className="mt-3">
+                <Boton
+                  texto="Ingresar"
+                  variante="primary"
+                  tipo="submit"
+                />
+              </div>
+
+            </Form>
+          </Card>
+
+          <p className="text-center mt-3 mb-0">
+            ¿No tienes una cuenta?{' '}
+            <Link to="/registro">
+              Regístrate aquí
+            </Link>
+          </p>
+
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
 export default FormularioLogin;
-          
