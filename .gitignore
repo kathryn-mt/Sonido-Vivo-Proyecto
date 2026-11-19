@@ -22,9 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-<<<<<<< HEAD
-coverage/
-=======
 # Resultados de pruebas
 coverage/
 
