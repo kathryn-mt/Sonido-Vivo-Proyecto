@@ -1,11 +1,11 @@
 
 import { Table, Button } from 'react-bootstrap';
 
-function TablaProductos({
-  productos,
-  onEditar,
-  onEliminar
-}) {
+function TablaProductos(props) {
+
+  const productos = props.productos;
+  const onEditar = props.onEditar;
+  const onEliminar = props.onEliminar;
   return (
     <div className="table-responsive">
       <Table striped bordered hover className="align-middle">
