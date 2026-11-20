@@ -12,6 +12,7 @@ function CampoConLabel(props) {
         value={props.value}
         onChange={props.onChange}
         error={props.error}
+        deshabilitado={props.deshabilitado}
       />
       {props.error && <Form.Control.Feedback type="invalid">
         {props.error}

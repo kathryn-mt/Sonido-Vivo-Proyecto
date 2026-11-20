@@ -1,11 +1,15 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import FormularioLogin from '../components/organisms/FormularioLogin.jsx';
 import LayoutPrincipal from '../components/templates/LayoutPrincipal.jsx';
 import { useTituloPagina } from '../hooks/useTituloPagina';
-import { iniciarSesion } from '../services/authService';
+import {
+    iniciarSesion,
+    iniciarSesionPersonal
+} from '../services/authService';
+
+const MODO_PERSONAL = 'PERSONAL';
 
 function Login() {
 
@@ -13,26 +17,35 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const [errorLogin, setErrorLogin] = useState('');
+    const estadoErrorLogin = useState('');
+    const errorLogin = estadoErrorLogin[0];
+    const setErrorLogin = estadoErrorLogin[1];
 
-    async function manejarLogin(datosCredenciales) {
+    async function manejarLogin(modoAcceso, datosCredenciales) {
 
         setErrorLogin('');
 
         try {
 
-            const resultado = await iniciarSesion(
-                datosCredenciales
-            );
+            let resultado = null;
 
-            if (resultado.usuario.rol === 'ADMINISTRADOR') {
-
-                navigate('/admin', { replace: true });
-
+            if (modoAcceso === MODO_PERSONAL) {
+                resultado = await iniciarSesionPersonal(
+                    datosCredenciales
+                );
             } else {
+                resultado = await iniciarSesion(
+                    datosCredenciales
+                );
+            }
 
+            const usuarioAutenticado = resultado.usuario;
+            const rolUsuario = usuarioAutenticado.rol;
+
+            if (rolUsuario === 'ADMINISTRADOR') {
+                navigate('/admin', { replace: true });
+            } else {
                 navigate('/catalogo', { replace: true });
-
             }
 
         } catch (error) {
@@ -49,6 +62,9 @@ function Login() {
             <FormularioLogin
                 onLogin={manejarLogin}
                 error={errorLogin}
+                limpiarError={function() {
+                    setErrorLogin('');
+                }}
             />
         </LayoutPrincipal>
     );

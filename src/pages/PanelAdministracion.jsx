@@ -76,9 +76,9 @@ function PanelAdministracion() {
       </Row>
 
       <Alert variant="info" className="mt-4">
-        Este panel es una demostración del proyecto.
-        El control de acceso para administradores
-        se implementará en una etapa posterior.
+        El acceso visual a este panel está restringido a administradores
+        autenticados. Algunas funcionalidades administrativas aún están
+        en desarrollo.
       </Alert>
 
     </section>

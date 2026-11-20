@@ -9,6 +9,7 @@ function Input(props) {
       value={props.value}
       onChange={props.onChange}
       isInvalid={!!props.error}
+      disabled={props.deshabilitado || false}
     />
   );
 }

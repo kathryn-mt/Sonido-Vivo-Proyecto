@@ -7,6 +7,7 @@ function Boton(props) {
       variant={props.variante || "primary"} 
       onClick={props.onClick}
       className="w-100"
+      disabled={props.deshabilitado || false}
     >
       {props.texto}
     </Button>

@@ -6,18 +6,50 @@ import {
   Container
 } from 'react-bootstrap';
 
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useCarrito } from '../../context/CarritoContext';
 import { useCatalogo } from '../../context/CatalogoContext';
+import {
+  cerrarSesion,
+  estaAutenticado,
+  obtenerUsuario
+} from '../../services/authService';
 
 function Navbar() {
-  const { cantidadTotal } = useCarrito();
-  const { productos } = useCatalogo();
+  const carrito = useCarrito();
+  const catalogo = useCatalogo();
+  const navigate = useNavigate();
+
+  const estadoSesion = useState(function() {
+    return {
+      autenticado: estaAutenticado(),
+      usuario: obtenerUsuario()
+    };
+  });
+  const sesion = estadoSesion[0];
+  const setSesion = estadoSesion[1];
+
+  const usuarioActual = sesion.usuario || {};
+  const nombreCompleto = [
+    usuarioActual.nombre,
+    usuarioActual.apellido
+  ].filter(Boolean).join(' ');
+  const nombreUsuario = nombreCompleto || 'Mi cuenta';
+
+  function manejarCerrarSesion() {
+    cerrarSesion();
+    setSesion({
+      autenticado: false,
+      usuario: null
+    });
+    navigate('/login', { replace: true });
+  }
 
   // Obtener las categorías del catálogo sin repetirlas
   const categorias = [
-    ...new Set(productos.map(p => p.categoria).filter(Boolean))
+    ...new Set(catalogo.productos.map(p => p.categoria).filter(Boolean))
   ].sort((a, b) => a.localeCompare(b, 'es'));
 
   return (
@@ -93,12 +125,27 @@ function Navbar() {
             </Nav.Link>
 
             <Nav.Link as={Link} to="/carrito">
-              Carrito ({cantidadTotal})
+              Carrito ({carrito.cantidadTotal})
             </Nav.Link>
 
-            <Nav.Link as={Link} to="/login">
-              Ingresar
-            </Nav.Link>
+            {sesion.autenticado ? (
+              <>
+                <Nav.Link as="span" aria-label="Usuario autenticado">
+                  {nombreUsuario}
+                </Nav.Link>
+                <Nav.Link
+                  as="button"
+                  type="button"
+                  onClick={manejarCerrarSesion}
+                >
+                  Cerrar sesión
+                </Nav.Link>
+              </>
+            ) : (
+              <Nav.Link as={Link} to="/login">
+                Ingresar
+              </Nav.Link>
+            )}
 
           </Nav>
         </BsNavbar.Collapse>

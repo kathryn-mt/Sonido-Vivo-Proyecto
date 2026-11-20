@@ -1,5 +1,9 @@
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  estaAutenticado,
+  obtenerUsuario
+} from './services/authService';
 
 import LayoutPrincipal from './components/templates/LayoutPrincipal';
 
@@ -26,6 +30,22 @@ import MisPedidos from './pages/MisPedidos';
 import AdminProductos from './pages/AdminProductos';
 import AdminPedidos from './pages/AdminPedidos';
 import PanelAdministracion from './pages/PanelAdministracion';
+
+function RutaProtegidaAdministrador(props) {
+
+  const autenticado = estaAutenticado();
+  const usuario = obtenerUsuario();
+
+  if (!autenticado || !usuario) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (usuario.rol !== 'ADMINISTRADOR') {
+    return <Navigate to="/catalogo" replace />;
+  }
+
+  return props.children;
+}
 
 function App() {
   return (
@@ -151,9 +171,11 @@ function App() {
         <Route
           path="/admin/productos"
           element={
-            <LayoutPrincipal>
-              <AdminProductos />
-            </LayoutPrincipal>
+            <RutaProtegidaAdministrador>
+              <LayoutPrincipal>
+                <AdminProductos />
+              </LayoutPrincipal>
+            </RutaProtegidaAdministrador>
           }
         />
 
@@ -161,18 +183,22 @@ function App() {
         <Route
           path="/admin/pedidos"
           element={
-            <LayoutPrincipal>
-              <AdminPedidos />
-            </LayoutPrincipal>
+            <RutaProtegidaAdministrador>
+              <LayoutPrincipal>
+                <AdminPedidos />
+              </LayoutPrincipal>
+            </RutaProtegidaAdministrador>
           }
         />
         {/* Panel de administración */}
         <Route
           path="/admin"
           element={
-            <LayoutPrincipal>
-              <PanelAdministracion />
-            </LayoutPrincipal>
+            <RutaProtegidaAdministrador>
+              <LayoutPrincipal>
+                <PanelAdministracion />
+              </LayoutPrincipal>
+            </RutaProtegidaAdministrador>
           }
         />
       </Routes>

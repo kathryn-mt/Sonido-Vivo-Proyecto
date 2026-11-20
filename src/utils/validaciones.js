@@ -25,3 +25,35 @@ export const validarLogin = (datos) => {
   
   return errores; 
 };
+
+export const validarRUN = (run) => {
+  if (!run || String(run).trim() === '') {
+    return 'El RUN es obligatorio';
+  }
+
+  const runNormalizado = String(run)
+    .replace(/\./g, '')
+    .replace(/\s/g, '')
+    .replace(/-/g, '')
+    .toUpperCase();
+
+  const regexRUN = /^[0-9]{7,8}[0-9K]$/;
+
+  if (!regexRUN.test(runNormalizado)) {
+    return 'Formato de RUN inválido';
+  }
+
+  return '';
+};
+
+export const validarLoginPersonal = (datos) => {
+  const errores = {};
+
+  const errorRUN = validarRUN(datos.run);
+  if (errorRUN) errores.run = errorRUN;
+
+  const errorPassword = validarPassword(datos.password);
+  if (errorPassword) errores.password = errorPassword;
+
+  return errores;
+};

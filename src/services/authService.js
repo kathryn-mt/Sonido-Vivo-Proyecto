@@ -4,6 +4,43 @@ import { crearUsuarioDTO } from '../dto/usuario.dto';
 const TOKEN_KEY = 'sonido_vivo_token';
 const USER_KEY = 'sonido_vivo_usuario';
 
+function normalizarRUN(run) {
+
+    const runSinFormato = String(run || '')
+        .replace(/\./g, '')
+        .replace(/\s/g, '')
+        .replace(/-/g, '')
+        .toUpperCase();
+
+    return runSinFormato;
+}
+
+function guardarSesion(datos) {
+
+    if (!datos.token || !datos.usuario) {
+        throw new Error(
+            'La respuesta del servidor no contiene los datos de autenticación'
+        );
+    }
+
+    const usuario = crearUsuarioDTO(datos.usuario);
+
+    sessionStorage.setItem(
+        TOKEN_KEY,
+        datos.token
+    );
+
+    sessionStorage.setItem(
+        USER_KEY,
+        JSON.stringify(usuario)
+    );
+
+    return {
+        mensaje: datos.mensaje,
+        usuario: usuario
+    };
+}
+
 // ==========================================
 // INICIAR SESIÓN
 // ==========================================
@@ -22,30 +59,34 @@ export async function iniciarSesion(datosCredenciales) {
 
         const datos = respuesta.data;
 
-        if (!datos.token || !datos.usuario) {
-            throw new Error(
-                'La respuesta del servidor no contiene los datos de autenticación'
-            );
-        }
+        return guardarSesion(datos);
 
-        const usuario = crearUsuarioDTO(datos.usuario);
+    } catch (error) {
 
-        // Guardar JWT durante la sesión del navegador
-        sessionStorage.setItem(
-            TOKEN_KEY,
-            datos.token
+        const mensaje =
+            error.response?.data?.mensaje ||
+            error.message ||
+            'No fue posible iniciar sesión';
+
+        throw new Error(mensaje);
+    }
+}
+
+export async function iniciarSesionPersonal(datosCredenciales) {
+
+    try {
+
+        const respuesta = await api.post(
+            '/v1/auth/login-personal',
+            {
+                run: normalizarRUN(datosCredenciales.run),
+                password: datosCredenciales.password
+            }
         );
 
-        // Guardar información pública del usuario
-        sessionStorage.setItem(
-            USER_KEY,
-            JSON.stringify(usuario)
-        );
+        const datos = respuesta.data;
 
-        return {
-            mensaje: datos.mensaje,
-            usuario: usuario
-        };
+        return guardarSesion(datos);
 
     } catch (error) {
 
