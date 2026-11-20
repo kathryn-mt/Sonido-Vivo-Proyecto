@@ -1,5 +1,39 @@
 import { regionesComunas } from '../data/regionesComunas';
 
+export function normalizarRUN(run) {
+  return String(run || '')
+    .replace(/[.\s-]/g, '')
+    .toUpperCase();
+}
+
+export function validarRUNChileno(run) {
+  const runNormalizado = normalizarRUN(run);
+
+  if (!/^\d{7,8}[0-9K]$/.test(runNormalizado)) {
+    return false;
+  }
+
+  const digitos = runNormalizado.slice(0, -1);
+  let suma = 0;
+  let factor = 2;
+
+  for (let indice = digitos.length - 1; indice >= 0; indice -= 1) {
+    suma += Number(digitos[indice]) * factor;
+    factor = factor === 7 ? 2 : factor + 1;
+  }
+
+  const resto = 11 - (suma % 11);
+  let digitoVerificador = String(resto);
+
+  if (resto === 11) {
+    digitoVerificador = '0';
+  } else if (resto === 10) {
+    digitoVerificador = 'K';
+  }
+
+  return runNormalizado.endsWith(digitoVerificador);
+}
+
 export function validarRegistro(datos) {
   const errores = {};
 

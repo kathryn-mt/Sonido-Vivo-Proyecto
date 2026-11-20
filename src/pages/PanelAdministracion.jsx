@@ -23,6 +23,14 @@ function PanelAdministracion() {
         'Permite consultar los pedidos realizados por los clientes y actualizar su estado.',
       ruta: '/admin/pedidos',
       boton: 'Gestionar pedidos'
+    },
+    {
+      id: 3,
+      titulo: 'Registrar vendedor',
+      descripcion:
+        'Crea una cuenta de vendedor para que pueda acceder a las herramientas de gestión.',
+      ruta: '/admin/vendedores/nuevo',
+      boton: 'Registrar vendedor'
     }
   ];
 

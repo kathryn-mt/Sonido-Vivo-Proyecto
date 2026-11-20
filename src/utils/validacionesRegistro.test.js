@@ -1,6 +1,10 @@
 
 import { describe, it, expect } from 'vitest';
-import { validarRegistro } from './validacionesRegistro';
+import {
+  normalizarRUN,
+  validarRegistro,
+  validarRUNChileno
+} from './validacionesRegistro';
 import { regionesComunas } from '../data/regionesComunas';
 
 const region = Object.keys(regionesComunas)[0];
@@ -21,6 +25,12 @@ function datosCorrectos() {
 }
 
 describe('Validaciones de Registro', () => {
+
+  it('valida el dígito verificador y normaliza RUN con formato', () => {
+    expect(validarRUNChileno('12.345.678-5')).toBe(true);
+    expect(normalizarRUN('12.345.678-5')).toBe('123456785');
+    expect(validarRUNChileno('12.345.678-0')).toBe(false);
+  });
 
   it('rechaza nombres con números', () => {
     const datos = {

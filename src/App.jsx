@@ -32,6 +32,8 @@ import AdminPedidos from './pages/AdminPedidos';
 import PanelAdministracion from './pages/PanelAdministracion';
 import PanelVendedor from './pages/PanelVendedor';
 import CambiarPassword from './pages/CambiarPassword';
+import MiCuenta from './pages/MiCuenta';
+import RegistroVendedor from './pages/RegistroVendedor';
 
 function RutaProtegidaAdministrador(props) {
 
@@ -204,6 +206,17 @@ function App() {
           }
         />
 
+        <Route
+          path="/mi-cuenta"
+          element={
+            <RutaProtegidaUsuario>
+              <LayoutPrincipal>
+                <MiCuenta />
+              </LayoutPrincipal>
+            </RutaProtegidaUsuario>
+          }
+        />
+
         {/* Carrito */}
         <Route
           path="/carrito"
@@ -255,6 +268,17 @@ function App() {
             <RutaProtegidaAdministrador>
               <LayoutPrincipal>
                 <PanelAdministracion />
+              </LayoutPrincipal>
+            </RutaProtegidaAdministrador>
+          }
+        />
+
+        <Route
+          path="/admin/vendedores/nuevo"
+          element={
+            <RutaProtegidaAdministrador>
+              <LayoutPrincipal>
+                <RegistroVendedor />
               </LayoutPrincipal>
             </RutaProtegidaAdministrador>
           }
