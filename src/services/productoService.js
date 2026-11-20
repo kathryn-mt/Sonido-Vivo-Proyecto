@@ -1,162 +1,88 @@
-import productosIniciales from '../data/productos.json';
-
-const KEY = 'sonido_vivo_productos';
-
-
-// LEER PRODUCTOS
+import api from './api';
+import { normalizarProducto } from '../dto/producto.dto';
 
 
-function leer() {
-  const guardados = localStorage.getItem(KEY);
+// CRUD DE PRODUCTOS CON AXIOS - KATY
 
-  // Cargar productos iniciales solo la primera vez
-  if (guardados === null) {
-    localStorage.setItem(
-      KEY,
-      JSON.stringify(productosIniciales)
-    );
 
-    return productosIniciales.slice();
+// LISTAR PRODUCTOS
+export async function listarProductos() {
+
+  const respuesta = await api.get('/v1/productos');
+
+  if (!Array.isArray(respuesta.data)) {
+    throw new Error('El servidor no devolvió una lista de productos.');
   }
 
-  return JSON.parse(guardados);
+  return respuesta.data.map(function (producto) {
+    return normalizarProducto(producto);
+  });
 }
 
+// OBTENER PRODUCTO POR ID
+export async function obtenerProducto(id) {
 
-// GUARDAR PRODUCTOS
-
-
-function guardar(productos) {
-  localStorage.setItem(
-    KEY,
-    JSON.stringify(productos)
+  const respuesta = await api.get(
+    `/v1/productos/${Number(id)}`
   );
+
+  return normalizarProducto(respuesta.data);
 }
 
+// CREAR PRODUCTO
+export async function crearProducto(datos) {
 
-// READ: LISTAR PRODUCTOS
+  const respuesta = await api.post(
+    '/v1/productos',
+    datos
+  );
 
-
-export function listarProductos() {
-  return leer();
+  return normalizarProducto(respuesta.data);
 }
 
+// ACTUALIZAR PRODUCTO
+export async function actualizarProducto(id, datos) {
 
-// READ: OBTENER PRODUCTO POR ID
+  const respuesta = await api.put(
+    `/v1/productos/${Number(id)}`,
+    datos
+  );
 
-
-export function obtenerProducto(id) {
-  const productos = leer();
-
-  const producto = productos.find(function (productoActual) {
-    return productoActual.id === Number(id);
-  });
-
-  return producto || null;
+  return normalizarProducto(respuesta.data);
 }
 
+// ELIMINAR PRODUCTO
+export async function eliminarProducto(id) {
 
-// CREATE: CREAR PRODUCTO
-
-
-export function crearProducto(datos) {
-  const productos = leer();
-
-  let nuevoId = 1;
-
-  // Buscar el ID más alto
-  for (const producto of productos) {
-    if (Number(producto.id) >= nuevoId) {
-      nuevoId = Number(producto.id) + 1;
-    }
-  }
-
-  // Crear producto sin utilizar ...
-  const nuevoProducto = Object.assign({}, datos);
-
-  nuevoProducto.id = nuevoId;
-
-  productos.push(nuevoProducto);
-
-  guardar(productos);
-
-  return nuevoProducto;
-}
-
-
-// UPDATE: ACTUALIZAR PRODUCTO
-
-
-export function actualizarProducto(id, cambios) {
-  const productos = leer();
-
-  const productoId = Number(id);
-
-  const producto = productos.find(function (productoActual) {
-    return productoActual.id === productoId;
-  });
-
-  if (!producto) {
-    return null;
-  }
-
-  // Aplicar cambios sin utilizar ...
-  Object.assign(producto, cambios);
-
-  // Mantener el ID original
-  producto.id = productoId;
-
-  guardar(productos);
-
-  return producto;
-}
-
-
-// DELETE: ELIMINAR PRODUCTO
-
-
-export function eliminarProducto(id) {
-  const productos = leer();
-
-  const productoId = Number(id);
-
-  const actualizados = productos.filter(function (producto) {
-    return producto.id !== productoId;
-  });
-
-  if (actualizados.length === productos.length) {
-    return false;
-  }
-
-  guardar(actualizados);
+  await api.delete(
+    `/v1/productos/${Number(id)}`
+  );
 
   return true;
 }
 
 
-// DESCONTAR STOCK
+// COMPATIBILIDAD TEMPORAL CON PEDIDOS
 
 
 export function descontarStock(productosComprados) {
 
-  // Validar que existan productos para comprar
   if (
     !Array.isArray(productosComprados) ||
     productosComprados.length === 0
   ) {
-    throw new Error(
-      'No hay productos para descontar.'
-    );
+    throw new Error('No hay productos para descontar.');
   }
 
-  const productos = listarProductos();
+  const guardados = localStorage.getItem(
+    'sonido_vivo_productos'
+  );
+
+  const productos = JSON.parse(guardados || '[]');
 
   const cantidades = new Map();
 
- 
-  // AGRUPAR CANTIDADES
- 
-
+  // Agrupar cantidades
   for (const item of productosComprados) {
 
     const id = Number(item.id);
@@ -172,22 +98,16 @@ export function descontarStock(productosComprados) {
       );
     }
 
-    const cantidadAnterior = cantidades.get(id) || 0;
+    const anterior = cantidades.get(id) || 0;
 
-    cantidades.set(
-      id,
-      cantidadAnterior + cantidad
-    );
+    cantidades.set(id, anterior + cantidad);
   }
 
- 
-  // VERIFICAR STOCK
-  
-
+  // Verificar existencias
   cantidades.forEach(function (cantidad, id) {
 
-    const producto = productos.find(function (productoActual) {
-      return productoActual.id === id;
+    const producto = productos.find(function (actual) {
+      return actual.id === id;
     });
 
     if (!producto) {
@@ -203,27 +123,22 @@ export function descontarStock(productosComprados) {
     }
   });
 
-  
-  // ACTUALIZAR STOCK
-  
+  // Descontar inventario local
+  const actualizados = productos.map(function (producto) {
 
-  const productosActualizados = productos.map(function (producto) {
+    const nuevo = Object.assign({}, producto);
 
-    const productoActualizado = Object.assign(
-      {},
-      producto
-    );
+    nuevo.stock =
+      Number(producto.stock) -
+      (cantidades.get(producto.id) || 0);
 
-    const cantidadDescontar = cantidades.get(producto.id) || 0;
-
-    productoActualizado.stock =
-      Number(producto.stock) - cantidadDescontar;
-
-    return productoActualizado;
+    return nuevo;
   });
 
-  // Guardar inventario actualizado
-  guardar(productosActualizados);
+  localStorage.setItem(
+    'sonido_vivo_productos',
+    JSON.stringify(actualizados)
+  );
 
-  return productosActualizados;
+  return actualizados;
 }

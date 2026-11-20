@@ -9,6 +9,7 @@ import { validarProducto } from '../../utils/validacionesProducto';
 // ==========================================
 
 const categorias = [
+  'Audio',
   'Guitarras Acústicas',
   'Guitarras Eléctricas',
   'Bajos Eléctricos',

@@ -1,51 +1,49 @@
 import { useTituloPagina } from '../hooks/useTituloPagina';
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Card, Button, Alert } from 'react-bootstrap';
+import {
+  Container,
+  Card,
+  Button,
+  Alert,
+  Spinner
+} from 'react-bootstrap';
 
 import { useCatalogo } from '../context/CatalogoContext';
 import { useCarrito } from '../context/CarritoContext';
 
 
-// PÁGINA DETALLE DEL PRODUCTO
+// DETALLE DEL PRODUCTO - KATY
 
 
 function DetalleProducto() {
 
-
-  // OBTENER ID SIN DESESTRUCTURACIÓN
-
-
+  // OBTENER ID DE LA URL
   const parametros = useParams();
 
   const id = parametros.id;
 
-
-  // OBTENER PRODUCTOS DEL CATÁLOGO
-
-
+  // OBTENER DATOS DEL CATÁLOGO
   const catalogo = useCatalogo();
 
   const productos = catalogo.productos;
+  const cargando = catalogo.cargando;
+  const error = catalogo.error;
+  const refrescarProductos = catalogo.refrescarProductos;
 
-  
   // OBTENER FUNCIÓN DEL CARRITO
-
-
   const carrito = useCarrito();
 
   const agregarAlCarrito = carrito.agregarAlCarrito;
 
-
   // ESTADO DEL MENSAJE
-
-
   const estadoMensaje = useState('');
 
   const mensaje = estadoMensaje[0];
   const setMensaje = estadoMensaje[1];
 
-  // BUSCAR PRODUCTO SELECCIONADO
+
+  // BUSCAR PRODUCTO
 
 
   const producto = productos.find(function (productoActual) {
@@ -54,15 +52,101 @@ function DetalleProducto() {
 
 
   // TÍTULO DE LA PÁGINA
-  
+
 
   useTituloPagina(
-    producto?.nombre ?? 'Producto no encontrado'
+    producto?.nombre ?? 'Detalle del producto'
   );
 
-  
+
+  // REINTENTAR CARGA
+
+
+  async function reintentarCarga() {
+
+    try {
+
+      await refrescarProductos();
+
+    } catch (errorPeticion) {
+
+      console.error(
+        'Error al consultar productos:',
+        errorPeticion.message
+      );
+    }
+  }
+
+
+  // AGREGAR AL CARRITO
+
+
+  function manejarAgregarCarrito() {
+
+    if (!producto || Number(producto.stock) <= 0) {
+      return;
+    }
+
+    agregarAlCarrito(producto);
+
+    setMensaje(
+      `${producto.nombre} agregado al carrito correctamente.`
+    );
+  }
+
+
+  // MOSTRAR ESTADO DE CARGA
+
+
+  if (cargando) {
+
+    return (
+
+      <Container className="py-5 text-center">
+
+        <Spinner
+          animation="border"
+          variant="primary"
+        />
+
+        <p className="mt-3">
+          Cargando información del producto...
+        </p>
+
+      </Container>
+    );
+  }
+
+
+  // MOSTRAR ERROR DE CONEXIÓN
+
+
+  if (error) {
+
+    return (
+
+      <Container className="py-5">
+
+        <Alert variant="danger" role="alert">
+
+          <p>{error}</p>
+
+          <Button
+            variant="outline-danger"
+            onClick={reintentarCarga}
+          >
+            Reintentar
+          </Button>
+
+        </Alert>
+
+      </Container>
+    );
+  }
+
+
   // PRODUCTO NO ENCONTRADO
- 
+
 
   if (!producto) {
 
@@ -70,9 +154,7 @@ function DetalleProducto() {
 
       <Container className="py-5">
 
-        <h2>
-          Producto no encontrado
-        </h2>
+        <h2>Producto no encontrado</h2>
 
         <Link
           to="/catalogo"
@@ -85,35 +167,12 @@ function DetalleProducto() {
     );
   }
 
+  // MOSTRAR PRODUCTO
 
-  // AGREGAR PRODUCTO AL CARRITO
-  
-
-  function manejarAgregarCarrito() {
-
-    // Comprobar que exista stock
-    if (Number(producto.stock) <= 0) {
-      return;
-    }
-
-    // Agregar producto al carrito
-    agregarAlCarrito(producto);
-
-    // Mostrar mensaje de confirmación
-    setMensaje(
-      `${producto.nombre} agregado al carrito correctamente.`
-    );
-  }
-
- 
-  // MOSTRAR DETALLE DEL PRODUCTO
- 
 
   return (
 
     <Container className="py-5">
-
-      {/* VOLVER AL CATÁLOGO */}
 
       <Link
         to="/catalogo"
@@ -124,7 +183,7 @@ function DetalleProducto() {
 
       <Card className="shadow-sm">
 
-        {/* IMAGEN DEL PRODUCTO */}
+        {/* IMAGEN */}
 
         <Card.Img
           variant="top"
@@ -168,10 +227,10 @@ function DetalleProducto() {
           {/* PRECIO */}
 
           <h3 className="mb-4">
-            ${producto.precio.toLocaleString('es-CL')}
+            ${Number(producto.precio).toLocaleString('es-CL')}
           </h3>
 
-          {/* BOTÓN AGREGAR AL CARRITO */}
+          {/* AGREGAR AL CARRITO */}
 
           <Button
             variant="primary"

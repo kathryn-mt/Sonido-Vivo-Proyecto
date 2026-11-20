@@ -1,18 +1,41 @@
-
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig({
-    plugins: [react()],
+export default defineConfig(function (config) {
 
-    server: {
-        host: '0.0.0.0',
+    // Obtener las variables de entorno
+    const env = loadEnv(
+        config.mode,
+        process.cwd(),
+        'VITE_'
+    );
 
-        proxy: {
-            '/api': {
-                target: 'http://172.31.47.94:3000',
-                changeOrigin: true
+    // Dirección del backend para este entorno
+    const backendURL =
+        env.VITE_API_PROXY_TARGET ||
+        'http://172.31.47.94:3000';
+
+    return {
+
+        plugins: [react()],
+
+        server: {
+
+            host: '0.0.0.0',
+
+            proxy: {
+
+                '/api': {
+
+                    target: backendURL,
+
+                    changeOrigin: true
+
+                }
+
             }
+
         }
-    }
+
+    };
 });
