@@ -30,6 +30,7 @@ import MisPedidos from './pages/MisPedidos';
 import AdminProductos from './pages/AdminProductos';
 import AdminPedidos from './pages/AdminPedidos';
 import PanelAdministracion from './pages/PanelAdministracion';
+import PanelVendedor from './pages/PanelVendedor';
 
 function RutaProtegidaAdministrador(props) {
 
@@ -41,6 +42,30 @@ function RutaProtegidaAdministrador(props) {
   }
 
   if (usuario.rol !== 'ADMINISTRADOR') {
+    return <Navigate to="/catalogo" replace />;
+  }
+
+  return props.children;
+
+}
+
+// PROTEGER RUTAS DEL VENDEDOR
+
+
+function RutaProtegidaVendedor(props) {
+
+  const autenticado = estaAutenticado();
+  const usuario = obtenerUsuario();
+
+  // Si no inició sesión, enviarlo al login
+  if (!autenticado || !usuario) {
+
+    return <Navigate to="/login" replace />;
+  }
+
+  // Si no es vendedor, impedir el acceso
+  if (usuario.rol !== 'VENDEDOR') {
+
     return <Navigate to="/catalogo" replace />;
   }
 
@@ -190,7 +215,8 @@ function App() {
             </RutaProtegidaAdministrador>
           }
         />
-        {/* Panel de administración */}
+                {/* PANEL DE ADMINISTRACIÓN */}
+
         <Route
           path="/admin"
           element={
@@ -201,6 +227,33 @@ function App() {
             </RutaProtegidaAdministrador>
           }
         />
+
+        {/* PANEL DEL VENDEDOR */}
+
+        <Route
+          path="/vendedor"
+          element={
+            <RutaProtegidaVendedor>
+              <LayoutPrincipal>
+                <PanelVendedor />
+              </LayoutPrincipal>
+            </RutaProtegidaVendedor>
+          }
+        />
+
+        {/* PRODUCTOS DEL VENDEDOR */}
+
+        <Route
+          path="/vendedor/productos"
+          element={
+            <RutaProtegidaVendedor>
+              <LayoutPrincipal>
+                <AdminProductos />
+              </LayoutPrincipal>
+            </RutaProtegidaVendedor>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );

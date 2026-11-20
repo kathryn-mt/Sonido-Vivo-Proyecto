@@ -129,23 +129,42 @@ function Navbar() {
             </Nav.Link>
 
             {sesion.autenticado ? (
-              <>
-                <Nav.Link as="span" aria-label="Usuario autenticado">
-                  {nombreUsuario}
-                </Nav.Link>
-                <Nav.Link
-                  as="button"
-                  type="button"
-                  onClick={manejarCerrarSesion}
-                >
-                  Cerrar sesión
-                </Nav.Link>
-              </>
-            ) : (
-              <Nav.Link as={Link} to="/login">
-                Ingresar
-              </Nav.Link>
-            )}
+  <>
+
+    {/* Acceso al panel del administrador */}
+    {usuarioActual.rol === 'ADMINISTRADOR' && (
+      <Nav.Link as={Link} to="/admin">
+        Mi panel
+      </Nav.Link>
+    )}
+
+    {/* Acceso al panel del vendedor */}
+    {usuarioActual.rol === 'VENDEDOR' && (
+      <Nav.Link as={Link} to="/vendedor">
+        Mi panel
+      </Nav.Link>
+    )}
+
+    {/* Nombre del usuario autenticado */}
+    <Nav.Link as="span" aria-label="Usuario autenticado">
+      {nombreUsuario}
+    </Nav.Link>
+
+    {/* Cerrar sesión */}
+    <Nav.Link
+      as="button"
+      type="button"
+      onClick={manejarCerrarSesion}
+    >
+      Cerrar sesión
+    </Nav.Link>
+
+  </>
+) : (
+  <Nav.Link as={Link} to="/login">
+    Ingresar
+  </Nav.Link>
+)}
 
           </Nav>
         </BsNavbar.Collapse>

@@ -1,11 +1,13 @@
 
 import { Table, Button } from 'react-bootstrap';
-
+import { obtenerUsuario } from '../../services/authService';
 function TablaProductos(props) {
 
   const productos = props.productos;
   const onEditar = props.onEditar;
   const onEliminar = props.onEliminar;
+  const usuarioActual = obtenerUsuario();
+  const puedeEliminar = usuarioActual?.rol === 'ADMINISTRADOR';
   return (
     <div className="table-responsive">
       <Table striped bordered hover className="align-middle">
@@ -38,13 +40,15 @@ function TablaProductos(props) {
                     Editar
                   </Button>
 
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => onEliminar(producto.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  {puedeEliminar && (
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() => onEliminar(producto.id)}
+                    >
+                      Eliminar
+                    </Button>
+                  )}
                 </div>
               </td>
             </tr>

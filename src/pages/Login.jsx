@@ -44,6 +44,10 @@ function Login() {
 
             if (rolUsuario === 'ADMINISTRADOR') {
                 navigate('/admin', { replace: true });
+
+            } else if (rolUsuario === 'VENDEDOR') {
+                navigate('/vendedor', { replace: true });
+
             } else {
                 navigate('/catalogo', { replace: true });
             }
