@@ -70,4 +70,19 @@ describe('Protección del panel de administración', function() {
     ).not.toBeInTheDocument();
     expect(screen.getByText('Inicia sesión para continuar')).toBeInTheDocument();
   });
+
+  it('redirige al login al intentar cambiar contraseña sin sesión', async function() {
+    contextoMocks.useCarrito.mockReturnValue({ cantidadTotal: 0 });
+    contextoMocks.useCatalogo.mockReturnValue({ productos: [] });
+    window.history.replaceState({}, '', '/cambiar-password');
+
+    render(<App />);
+
+    await waitFor(function() {
+      expect(window.location.pathname).toBe('/login');
+    });
+    expect(screen.getByText('Inicia sesión para continuar')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Cambiar contraseña' }))
+      .not.toBeInTheDocument();
+  });
 });

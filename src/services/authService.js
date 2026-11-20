@@ -99,6 +99,31 @@ export async function iniciarSesionPersonal(datosCredenciales) {
     }
 }
 
+export async function cambiarPassword(passwordActual, passwordNueva) {
+
+    try {
+
+        const respuesta = await api.patch(
+            '/v1/auth/cambiar-password',
+            {
+                passwordActual: passwordActual,
+                passwordNueva: passwordNueva
+            }
+        );
+
+        return respuesta.data.mensaje;
+
+    } catch (error) {
+
+        const mensaje =
+            error.response?.data?.mensaje ||
+            error.message ||
+            'No fue posible cambiar la contraseña';
+
+        throw new Error(mensaje);
+    }
+}
+
 // ==========================================
 // OBTENER TOKEN
 // ==========================================

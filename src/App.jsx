@@ -31,6 +31,7 @@ import AdminProductos from './pages/AdminProductos';
 import AdminPedidos from './pages/AdminPedidos';
 import PanelAdministracion from './pages/PanelAdministracion';
 import PanelVendedor from './pages/PanelVendedor';
+import CambiarPassword from './pages/CambiarPassword';
 
 function RutaProtegidaAdministrador(props) {
 
@@ -66,6 +67,26 @@ function RutaProtegidaVendedor(props) {
   // Si no es vendedor, impedir el acceso
   if (usuario.rol !== 'VENDEDOR') {
 
+    return <Navigate to="/catalogo" replace />;
+  }
+
+  return props.children;
+}
+
+function RutaProtegidaUsuario(props) {
+
+  const autenticado = estaAutenticado();
+  const usuario = obtenerUsuario();
+
+  if (!autenticado || !usuario) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (
+    usuario.rol !== 'CLIENTE' &&
+    usuario.rol !== 'VENDEDOR' &&
+    usuario.rol !== 'ADMINISTRADOR'
+  ) {
     return <Navigate to="/catalogo" replace />;
   }
 
@@ -171,6 +192,17 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/registro" element={<Registro />} />
+
+        <Route
+          path="/cambiar-password"
+          element={
+            <RutaProtegidaUsuario>
+              <LayoutPrincipal>
+                <CambiarPassword />
+              </LayoutPrincipal>
+            </RutaProtegidaUsuario>
+          }
+        />
 
         {/* Carrito */}
         <Route
