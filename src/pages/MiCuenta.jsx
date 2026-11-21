@@ -11,6 +11,7 @@ import {
 import { opcionesRegiones, regionesComunas } from '../data/regionesComunas';
 import { useTituloPagina } from '../hooks/useTituloPagina';
 import { obtenerUsuario } from '../services/authService';
+import { actualizarUsuarioSesion } from '../services/authSession';
 import {
     actualizarPerfilUsuario,
     obtenerPerfilUsuario
@@ -209,6 +210,7 @@ function MiCuenta() {
                 datosPersonales
             );
 
+            actualizarUsuarioSesion(respuesta.usuario);
             setDatos(Object.assign({}, datos, datosPersonales));
             setMensaje(respuesta.mensaje);
         } catch (errorPeticion) {

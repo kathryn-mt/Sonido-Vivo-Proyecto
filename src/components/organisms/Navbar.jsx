@@ -16,7 +16,10 @@ import {
   estaAutenticado,
   obtenerUsuario
 } from '../../services/authService';
-import { SESSION_EXPIRED_EVENT } from '../../services/authSession';
+import {
+  SESSION_EXPIRED_EVENT,
+  SESSION_UPDATED_EVENT
+} from '../../services/authSession';
 
 function Navbar() {
   const carrito = useCarrito();
@@ -40,10 +43,19 @@ function Navbar() {
       });
     }
 
+    function manejarSesionActualizada() {
+      setSesion({
+        autenticado: estaAutenticado(),
+        usuario: obtenerUsuario()
+      });
+    }
+
     window.addEventListener(SESSION_EXPIRED_EVENT, manejarSesionExpirada);
+    window.addEventListener(SESSION_UPDATED_EVENT, manejarSesionActualizada);
 
     return () => {
       window.removeEventListener(SESSION_EXPIRED_EVENT, manejarSesionExpirada);
+      window.removeEventListener(SESSION_UPDATED_EVENT, manejarSesionActualizada);
     };
   }, []);
 
