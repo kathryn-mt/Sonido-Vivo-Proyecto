@@ -4,7 +4,9 @@ const apiMock = vi.hoisted(function() {
     return {
         get: vi.fn(),
         put: vi.fn(),
-        post: vi.fn()
+        patch: vi.fn(),
+        post: vi.fn(),
+        delete: vi.fn()
     };
 });
 
@@ -16,8 +18,12 @@ vi.mock('./api.js', function() {
 
 import {
     actualizarPerfilUsuario,
+    actualizarUsuario,
+    desactivarUsuario,
+    listarUsuarios,
     obtenerPerfilUsuario,
-    registrarVendedor
+    registrarVendedor,
+    reactivarUsuario
 } from './usuarioService.js';
 
 describe('Servicio de usuario', function() {
@@ -45,6 +51,115 @@ describe('Servicio de usuario', function() {
 
         expect(apiMock.get).toHaveBeenCalledWith('/v1/usuarios/42');
         expect(perfil).toEqual(usuario);
+    });
+
+    it('lista usuarios desde el endpoint de administración', async function() {
+        const usuarios = [{ id: 8, nombre: 'Luis', password_hash: 'no-exponer' }];
+        apiMock.get.mockResolvedValue({
+            data: { mensaje: 'Usuarios obtenidos', total: 1, usuarios }
+        });
+
+        await expect(listarUsuarios()).resolves.toEqual({
+            mensaje: 'Usuarios obtenidos',
+            total: 1,
+            usuarios
+        });
+        expect(apiMock.get).toHaveBeenCalledWith('/v1/usuarios');
+    });
+
+    it('rechaza respuestas de listado con estructura inválida', async function() {
+        apiMock.get.mockResolvedValue({ data: { usuarios: null } });
+
+        await expect(listarUsuarios()).rejects.toThrow(
+            'La respuesta del servidor no contiene una lista de usuarios.'
+        );
+    });
+
+    it('actualiza los campos administrativos y permite omitir el rol propio', async function() {
+        apiMock.put.mockResolvedValue({ data: { mensaje: 'Usuario actualizado' } });
+        const datos = {
+            nombre: 'Luis',
+            apellido: 'Pérez',
+            email: 'luis@example.cl',
+            run: '123456785',
+            region: 'valparaiso',
+            comuna: 'Viña del Mar',
+            direccion: 'Calle Nueva 456',
+            password: 'no-enviar',
+            rol: undefined
+        };
+
+        await actualizarUsuario(8, datos);
+
+        expect(apiMock.put).toHaveBeenCalledWith('/v1/usuarios/8', {
+            nombre: 'Luis',
+            apellido: 'Pérez',
+            correo: 'luis@example.cl',
+            run: '123456785',
+            region: 'valparaiso',
+            comuna: 'Viña del Mar',
+            direccion: 'Calle Nueva 456'
+        });
+    });
+
+    it('envía el cambio de rol cuando está permitido', async function() {
+        apiMock.put.mockResolvedValue({ data: { mensaje: 'Rol actualizado' } });
+
+        await actualizarUsuario(8, {
+            nombre: 'Luis',
+            apellido: 'Pérez',
+            email: 'luis@example.cl',
+            run: '123456785',
+            region: 'valparaiso',
+            comuna: 'Viña del Mar',
+            direccion: 'Calle Nueva 456',
+            rol: 'ADMINISTRADOR'
+        });
+
+        expect(apiMock.put.mock.calls[0][1].rol).toBe('ADMINISTRADOR');
+    });
+
+    it('desactiva usuarios mediante DELETE y conserva el mensaje del servidor', async function() {
+        apiMock.delete.mockResolvedValue({ data: { mensaje: 'Usuario desactivado' } });
+
+        await expect(desactivarUsuario(8)).resolves.toEqual({
+            mensaje: 'Usuario desactivado'
+        });
+        expect(apiMock.delete).toHaveBeenCalledWith('/v1/usuarios/8');
+    });
+
+    it('propaga errores del servidor al desactivar un usuario', async function() {
+        apiMock.delete.mockRejectedValue({
+            response: { data: { mensaje: 'No tienes permiso para desactivar' } }
+        });
+
+        await expect(desactivarUsuario(8)).rejects.toThrow(
+            'No tienes permiso para desactivar'
+        );
+    });
+
+    it('reactiva usuarios mediante PATCH y devuelve el mensaje del servidor', async function() {
+        apiMock.patch.mockResolvedValue({
+            status: 200,
+            data: { mensaje: 'Usuario reactivado correctamente' }
+        });
+
+        await expect(reactivarUsuario(8)).resolves.toEqual({
+            mensaje: 'Usuario reactivado correctamente'
+        });
+        expect(apiMock.patch).toHaveBeenCalledWith('/v1/usuarios/8/reactivar');
+    });
+
+    it.each([
+        [403, 'No tienes permisos para reactivar usuarios.'],
+        [404, 'No se encontró el usuario que intentas reactivar.'],
+        [409, 'El usuario ya está activo.']
+    ])('explica el error HTTP %s al reactivar', async function(estado, mensaje) {
+        apiMock.patch.mockRejectedValue({
+            response: { status: estado, data: {} }
+        });
+
+        await expect(reactivarUsuario(8)).rejects.toThrow(mensaje);
     });
 
     it('envía solo los cinco campos personales permitidos al actualizar', async function() {

@@ -1,8 +1,10 @@
 import api from './api';
 import { crearUsuarioDTO } from '../dto/usuario.dto';
-
-const TOKEN_KEY = 'sonido_vivo_token';
-const USER_KEY = 'sonido_vivo_usuario';
+import {
+    limpiarSesion,
+    TOKEN_KEY,
+    USER_KEY
+} from './authSession';
 
 function normalizarRUN(run) {
 
@@ -158,7 +160,63 @@ export function obtenerUsuario() {
 
 export function estaAutenticado() {
 
-    return Boolean(obtenerToken());
+    const token = obtenerToken();
+
+    if (!token || !tokenTieneExpiracionValida(token)) {
+        if (token) {
+            cerrarSesion();
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+function decodificarSegmentoJWT(segmento) {
+    if (!/^[A-Za-z0-9_-]+$/.test(segmento)) {
+        return null;
+    }
+
+    const base64 = segmento
+        .replace(/-/g, '+')
+        .replace(/_/g, '/')
+        .padEnd(Math.ceil(segmento.length / 4) * 4, '=');
+
+    try {
+        return JSON.parse(atob(base64));
+    } catch {
+        return null;
+    }
+}
+
+function tokenTieneExpiracionValida(token) {
+    const segmentos = token.split('.');
+
+    if (
+        segmentos.length !== 3 ||
+        segmentos.some(segmento => !segmento || segmento.length % 4 === 1)
+    ) {
+        return false;
+    }
+
+    const encabezado = decodificarSegmentoJWT(segmentos[0]);
+    const declaraciones = decodificarSegmentoJWT(segmentos[1]);
+
+    if (
+        !encabezado ||
+        typeof encabezado !== 'object' ||
+        Array.isArray(encabezado) ||
+        !declaraciones ||
+        typeof declaraciones !== 'object' ||
+        Array.isArray(declaraciones) ||
+        typeof declaraciones.exp !== 'number' ||
+        !Number.isFinite(declaraciones.exp)
+    ) {
+        return false;
+    }
+
+    return declaraciones.exp > Date.now() / 1000;
 }
 
 // ==========================================
@@ -167,6 +225,5 @@ export function estaAutenticado() {
 
 export function cerrarSesion() {
 
-    sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(USER_KEY);
+    limpiarSesion();
 }

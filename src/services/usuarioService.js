@@ -1,5 +1,29 @@
 import api from './api';
 
+function obtenerMensajeError(error, mensajePredeterminado) {
+    return error.response?.data?.mensaje ||
+        error.message ||
+        mensajePredeterminado;
+}
+
+export async function listarUsuarios() {
+    try {
+        const respuesta = await api.get('/v1/usuarios');
+        const usuarios = respuesta.data?.usuarios;
+
+        if (!Array.isArray(usuarios)) {
+            throw new Error('La respuesta del servidor no contiene una lista de usuarios.');
+        }
+
+        return respuesta.data;
+    } catch (error) {
+        throw new Error(obtenerMensajeError(
+            error,
+            'No fue posible obtener la lista de usuarios.'
+        ));
+    }
+}
+
 export async function obtenerPerfilUsuario(idUsuario) {
 
     try {
@@ -20,6 +44,82 @@ export async function obtenerPerfilUsuario(idUsuario) {
             error.response?.data?.mensaje ||
             error.message ||
             'No fue posible obtener la información del usuario.';
+
+        throw new Error(mensaje);
+    }
+}
+
+export async function actualizarUsuario(idUsuario, datosUsuario) {
+    try {
+        const respuesta = await api.put(
+            `/v1/usuarios/${encodeURIComponent(idUsuario)}`,
+            {
+                nombre: datosUsuario.nombre,
+                apellido: datosUsuario.apellido,
+                correo: datosUsuario.email,
+                run: datosUsuario.run,
+                region: datosUsuario.region,
+                comuna: datosUsuario.comuna,
+                direccion: datosUsuario.direccion,
+                ...(datosUsuario.rol ? { rol: datosUsuario.rol } : {})
+            }
+        );
+
+        if (!respuesta.data.mensaje) {
+            throw new Error('El servidor no confirmó la actualización del usuario.');
+        }
+
+        return respuesta.data;
+    } catch (error) {
+        const mensaje =
+            error.response?.data?.mensaje ||
+            error.message ||
+            'No fue posible actualizar la información del usuario.';
+
+        throw new Error(mensaje);
+    }
+}
+
+export async function desactivarUsuario(idUsuario) {
+    try {
+        const respuesta = await api.delete(
+            `/v1/usuarios/${encodeURIComponent(idUsuario)}`
+        );
+
+        if (!respuesta.data.mensaje) {
+            throw new Error('El servidor no confirmó la desactivación del usuario.');
+        }
+
+        return respuesta.data;
+    } catch (error) {
+        throw new Error(obtenerMensajeError(
+            error,
+            'No fue posible desactivar al usuario.'
+        ));
+    }
+}
+
+export async function reactivarUsuario(idUsuario) {
+    try {
+        const respuesta = await api.patch(
+            `/v1/usuarios/${encodeURIComponent(idUsuario)}/reactivar`
+        );
+
+        return respuesta.data || {};
+    } catch (error) {
+        const estado = error.response?.status;
+        const mensajeServidor = error.response?.data?.mensaje;
+        const mensajesPorEstado = {
+            403: 'No tienes permisos para reactivar usuarios.',
+            404: 'No se encontró el usuario que intentas reactivar.',
+            409: 'El usuario ya está activo.'
+        };
+        const mensaje =
+            mensajeServidor ||
+            mensajesPorEstado[estado] ||
+            (!error.response && 'No fue posible conectar con el servidor. Inténtalo nuevamente.') ||
+            error.message ||
+            'No fue posible reactivar al usuario.';
 
         throw new Error(mensaje);
     }
@@ -48,12 +148,10 @@ export async function actualizarPerfilUsuario(idUsuario, datosPersonales) {
 
     } catch (error) {
 
-        const mensaje =
-            error.response?.data?.mensaje ||
-            error.message ||
-            'No fue posible actualizar la información del usuario.';
-
-        throw new Error(mensaje);
+        throw new Error(obtenerMensajeError(
+            error,
+            'No fue posible actualizar la información del usuario.'
+        ));
     }
 }
 

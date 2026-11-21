@@ -6,7 +6,7 @@ import {
   Container
 } from 'react-bootstrap';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useCarrito } from '../../context/CarritoContext';
@@ -16,30 +16,46 @@ import {
   estaAutenticado,
   obtenerUsuario
 } from '../../services/authService';
+import { SESSION_EXPIRED_EVENT } from '../../services/authSession';
 
 function Navbar() {
   const carrito = useCarrito();
   const catalogo = useCatalogo();
   const navigate = useNavigate();
+  const [menuCuentaAbierto, setMenuCuentaAbierto] = useState(false);
 
-  const estadoSesion = useState(function() {
+  const [sesion, setSesion] = useState(function() {
     return {
       autenticado: estaAutenticado(),
       usuario: obtenerUsuario()
     };
   });
-  const sesion = estadoSesion[0];
-  const setSesion = estadoSesion[1];
+
+  useEffect(() => {
+    function manejarSesionExpirada() {
+      setMenuCuentaAbierto(false);
+      setSesion({
+        autenticado: false,
+        usuario: null
+      });
+    }
+
+    window.addEventListener(SESSION_EXPIRED_EVENT, manejarSesionExpirada);
+
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, manejarSesionExpirada);
+    };
+  }, []);
 
   const usuarioActual = sesion.usuario || {};
   const nombreCompleto = [
     usuarioActual.nombre,
     usuarioActual.apellido
   ].filter(Boolean).join(' ');
-  const nombreUsuario = nombreCompleto || 'Mi cuenta';
 
   function manejarCerrarSesion() {
     cerrarSesion();
+    setMenuCuentaAbierto(false);
     setSesion({
       autenticado: false,
       usuario: null
@@ -129,42 +145,76 @@ function Navbar() {
             </Nav.Link>
 
             {sesion.autenticado ? (
-  <>
+              <NavDropdown
+                title={(
+                  <>
+                    <svg
+                      aria-hidden="true"
+                      focusable="false"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="me-1"
+                    >
+                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 1c-2.67 0-5 1.34-5 3v1h10v-1c0-1.66-2.33-3-5-3Z" />
+                    </svg>
+                    Mi cuenta
+                  </>
+                )}
+                id="menu-mi-cuenta"
+                show={menuCuentaAbierto}
+                onToggle={setMenuCuentaAbierto}
+                onMouseEnter={() => {
+                  if (window.matchMedia?.('(hover: hover)').matches) {
+                    setMenuCuentaAbierto(true);
+                  }
+                }}
+                onMouseLeave={() => setMenuCuentaAbierto(false)}
+                onSelect={() => setMenuCuentaAbierto(false)}
+              >
+                <NavDropdown.Header>
+                  <span className="d-block">
+                    {nombreCompleto || 'Usuario'}
+                  </span>
+                  <small>{usuarioActual.rol}</small>
+                </NavDropdown.Header>
 
-    {/* Acceso al panel del administrador */}
-    {usuarioActual.rol === 'ADMINISTRADOR' && (
-      <Nav.Link as={Link} to="/admin">
-        Mi panel
-      </Nav.Link>
-    )}
+                <NavDropdown.Item as={Link} to="/mi-cuenta">
+                  Ver y editar mis datos
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/cambiar-password">
+                  Cambiar contraseña
+                </NavDropdown.Item>
 
-    {/* Acceso al panel del vendedor */}
-    {usuarioActual.rol === 'VENDEDOR' && (
-      <Nav.Link as={Link} to="/vendedor">
-        Mi panel
-      </Nav.Link>
-    )}
+                {(usuarioActual.rol === 'ADMINISTRADOR' ||
+                  usuarioActual.rol === 'VENDEDOR') && (
+                  <NavDropdown.Item
+                    as={Link}
+                    to={
+                      usuarioActual.rol === 'ADMINISTRADOR'
+                        ? '/admin'
+                        : '/vendedor'
+                    }
+                  >
+                    Mi panel
+                  </NavDropdown.Item>
+                )}
 
-    {/* Nombre del usuario autenticado */}
-    <Nav.Link as="span" aria-label="Usuario autenticado">
-      {nombreUsuario}
-    </Nav.Link>
-
-    {/* Cerrar sesión */}
-    <Nav.Link
-      as="button"
-      type="button"
-      onClick={manejarCerrarSesion}
-    >
-      Cerrar sesión
-    </Nav.Link>
-
-  </>
-) : (
-  <Nav.Link as={Link} to="/login">
-    Ingresar
-  </Nav.Link>
-)}
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  as="button"
+                  type="button"
+                  onClick={manejarCerrarSesion}
+                >
+                  Cerrar sesión
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Nav.Link as={Link} to="/login">
+                Ingresar
+              </Nav.Link>
+            )}
 
           </Nav>
         </BsNavbar.Collapse>

@@ -1,9 +1,18 @@
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
+import { useLayoutEffect } from 'react';
 import {
   estaAutenticado,
   obtenerUsuario
 } from './services/authService';
+import { SESSION_EXPIRED_EVENT } from './services/authSession';
 
 import LayoutPrincipal from './components/templates/LayoutPrincipal';
 
@@ -29,6 +38,7 @@ import MisPedidos from './pages/MisPedidos';
 // Páginas administrativas
 import AdminProductos from './pages/AdminProductos';
 import AdminPedidos from './pages/AdminPedidos';
+import AdminUsuarios from './pages/AdminUsuarios';
 import PanelAdministracion from './pages/PanelAdministracion';
 import PanelVendedor from './pages/PanelVendedor';
 import CambiarPassword from './pages/CambiarPassword';
@@ -45,7 +55,7 @@ function RutaProtegidaAdministrador(props) {
   }
 
   if (usuario.rol !== 'ADMINISTRADOR') {
-    return <Navigate to="/catalogo" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return props.children;
@@ -69,7 +79,7 @@ function RutaProtegidaVendedor(props) {
   // Si no es vendedor, impedir el acceso
   if (usuario.rol !== 'VENDEDOR') {
 
-    return <Navigate to="/catalogo" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return props.children;
@@ -89,15 +99,37 @@ function RutaProtegidaUsuario(props) {
     usuario.rol !== 'VENDEDOR' &&
     usuario.rol !== 'ADMINISTRADOR'
   ) {
-    return <Navigate to="/catalogo" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return props.children;
 }
 
+function ManejadorSesionExpirada() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useLayoutEffect(function() {
+    function redirigirAlLogin() {
+      if (location.pathname !== '/login') {
+        navigate('/login', { replace: true });
+      }
+    }
+
+    window.addEventListener(SESSION_EXPIRED_EVENT, redirigirAlLogin);
+
+    return function() {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, redirigirAlLogin);
+    };
+  }, [location.pathname, navigate]);
+
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <ManejadorSesionExpirada />
       <Routes>
 
         {/* Inicio */}
@@ -260,6 +292,18 @@ function App() {
             </RutaProtegidaAdministrador>
           }
         />
+
+                <Route
+                  path="/admin/usuarios"
+                  element={
+                    <RutaProtegidaAdministrador>
+                      <LayoutPrincipal>
+                        <AdminUsuarios />
+                      </LayoutPrincipal>
+                    </RutaProtegidaAdministrador>
+                  }
+                />
+
                 {/* PANEL DE ADMINISTRACIÓN */}
 
         <Route
@@ -308,6 +352,11 @@ function App() {
               </LayoutPrincipal>
             </RutaProtegidaVendedor>
           }
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
         />
 
       </Routes>

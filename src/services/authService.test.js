@@ -18,9 +18,26 @@ vi.mock('./api.js', function() {
 import {
   cambiarPassword,
   cerrarSesion,
+  estaAutenticado,
   iniciarSesionPersonal,
+  obtenerToken,
   obtenerUsuario
 } from './authService.js';
+
+function crearTokenPrueba(expiracion) {
+  function codificar(valor) {
+    return btoa(JSON.stringify(valor))
+      .replace(/=/g, '')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_');
+  }
+
+  return [
+    codificar({ alg: 'HS256', typ: 'JWT' }),
+    codificar({ exp: expiracion }),
+    'firma-de-prueba'
+  ].join('.');
+}
 
 describe('Servicio de autenticación personal', function() {
 
@@ -66,6 +83,45 @@ describe('Servicio de autenticación personal', function() {
 
     expect(resultado.usuario.rol).toBe('VENDEDOR');
     expect(usuarioGuardado.rol).toBe('VENDEDOR');
+  });
+
+  it('considera autenticado un JWT con expiración futura', function() {
+    const token = crearTokenPrueba(Math.floor(Date.now() / 1000) + 3600);
+    sessionStorage.setItem('sonido_vivo_token', token);
+
+    expect(estaAutenticado()).toBe(true);
+    expect(obtenerToken()).toBe(token);
+  });
+
+  it('limpia la sesión cuando el JWT está vencido', function() {
+    sessionStorage.setItem(
+      'sonido_vivo_token',
+      crearTokenPrueba(Math.floor(Date.now() / 1000) - 1)
+    );
+    sessionStorage.setItem('sonido_vivo_usuario', JSON.stringify({ rol: 'CLIENTE' }));
+
+    expect(estaAutenticado()).toBe(false);
+    expect(obtenerToken()).toBeNull();
+    expect(obtenerUsuario()).toBeNull();
+  });
+
+  it('limpia la sesión cuando el JWT está malformado', function() {
+    sessionStorage.setItem('sonido_vivo_token', 'token-malformado');
+    sessionStorage.setItem('sonido_vivo_usuario', JSON.stringify({ rol: 'CLIENTE' }));
+
+    expect(estaAutenticado()).toBe(false);
+    expect(obtenerToken()).toBeNull();
+    expect(obtenerUsuario()).toBeNull();
+  });
+
+  it('el cierre de sesión elimina token y usuario', function() {
+    sessionStorage.setItem('sonido_vivo_token', 'token-de-prueba');
+    sessionStorage.setItem('sonido_vivo_usuario', JSON.stringify({ rol: 'CLIENTE' }));
+
+    cerrarSesion();
+
+    expect(obtenerToken()).toBeNull();
+    expect(obtenerUsuario()).toBeNull();
   });
 
   it('cambia la contraseña y retorna el mensaje del backend', async function() {

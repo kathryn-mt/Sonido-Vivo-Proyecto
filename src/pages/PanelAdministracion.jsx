@@ -31,6 +31,14 @@ function PanelAdministracion() {
         'Crea una cuenta de vendedor para que pueda acceder a las herramientas de gestión.',
       ruta: '/admin/vendedores/nuevo',
       boton: 'Registrar vendedor'
+    },
+    {
+      id: 4,
+      titulo: 'Gestionar usuarios',
+      descripcion:
+        'Consulta, edita y desactiva las cuentas registradas en Sonido Vivo.',
+      ruta: '/admin/usuarios',
+      boton: 'Gestionar usuarios'
     }
   ];
 
